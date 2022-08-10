@@ -75,63 +75,62 @@ Bool CAN1_SendMsg(CAN_MsgType *msg)   //CAN1的发送函数
     unsigned char send_buf = 0, sp = 0;
     Bool re = FALSE;
 
-    if (msg->len > CAN_MSG_MAXLEN)
-    {
-      re = FALSE;              //检查数据长度
-    }
-    if (CAN1CTL0_SYNCH == 0)     //检查总线时钟
+    if ((msg->len > CAN_MSG_MAXLEN) || (CAN1CTL0_SYNCH == 0)) //检查数据长度和总线时钟
     {
       re = FALSE;
     }
-    do
+    else
     {
-      CAN1TBSEL = CAN1TFLG;
-      send_buf = CAN1TBSEL; //寻找空闲的缓冲器
-    }                       //选择缓冲器，最低置1位
-    while (!(send_buf));
-
-    if (msg->IDE)          //IDE为1时是扩展帧
-    {
-        CAN1TXIDR0 = (unsigned char)(msg->id >> 21);      //写入标识符
-        CAN1TXIDR1 = (unsigned char)(msg->id >> 13) & 0xE0;
-        CAN1TXIDR1 |= 0x18;
-        CAN1TXIDR1 |= (unsigned char)(msg->id >> 15) & 0x07;
-        CAN1TXIDR2 = (unsigned char)(msg->id >> 7);
-        CAN1TXIDR3 = (unsigned char)(msg->id << 1);
-        if (msg->RTR)     //RTR位为1时是远程帧
+        do
         {
-            CAN1TXIDR3 |= 0x01;
+          CAN1TBSEL = CAN1TFLG;  //为获得下一个可用发送缓冲区,必须读取发送器标志寄存器的值，并写入发送缓冲器选择寄存器
+          send_buf = CAN1TBSEL;  //选择缓冲器，最低编号位设置为1,在第1位
         }
-        else              //RTR位为0时是数据帧
+        while (!(send_buf));    //0 相关报文缓冲器被取消， 1 如果编号位最低，相关报文缓冲器被选中
+
+        if (msg->IDE)          //IDE为1时是扩展帧
         {
-            CAN1TXIDR3 &= 0xFE;
+            CAN1TXIDR0 = (unsigned char)(msg->id >> 21);      //写入标识符
+            CAN1TXIDR1 = (unsigned char)(msg->id >> 13) & 0xE0;
+            CAN1TXIDR1 |= 0x18;                       //写替代远程请求位SRR和扩展帧标志位IDE
+            CAN1TXIDR1 |= (unsigned char)(msg->id >> 15) & 0x07;
+            CAN1TXIDR2 = (unsigned char)(msg->id >> 7);
+            CAN1TXIDR3 = (unsigned char)(msg->id << 1);
+            if (msg->RTR)     //RTR位为1时是远程帧
+            {
+                CAN1TXIDR3 |= 0x01;
+            }
+            else              //RTR位为0时是数据帧
+            {
+                CAN1TXIDR3 &= 0xFE;
+            }
+
+        }
+        else                  //IDE为0时是标准帧
+        {
+            CAN1TXIDR0 = (unsigned char)(msg->id >> 3);       //写入标识符
+            CAN1TXIDR1 = (unsigned char)(msg->id << 5);
+            CAN1TXIDR1 &= 0xF7;
+            if (msg->RTR)    //RTR位为1时是远程帧
+            {
+                CAN1TXIDR1 |= 0x10;
+            }
+            else             //RTR位为0时是数据帧
+            {
+                CAN1TXIDR1 &= 0xEF;
+            }
         }
 
+        for (sp = 0; sp < msg->len; sp++)
+        {
+            *((&CAN1TXDSR0) + sp) = msg->data[sp];            //写入数据
+        }
+
+        CAN1TXDLR = msg->len;  //写入数据长度
+        CAN1TXTBPR = msg->prty; //写入优先级
+        CAN1TFLG = send_buf;  //清TXx标志 缓冲器准备发送
+        re = TRUE;
     }
-    else                  //IDE为0时是标准帧
-    {
-        CAN1TXIDR0 = (unsigned char)(msg->id >> 3);       //写入标识符
-        CAN1TXIDR1 = (unsigned char)(msg->id << 5);
-        CAN1TXIDR1 &= 0xF7;
-        if (msg->RTR)    //RTR位为1时是远程帧
-        {
-            CAN1TXIDR1 |= 0x10;
-        }
-        else             //RTR位为0时是数据帧
-        {
-            CAN1TXIDR1 &= 0xEF;
-        }
-    }
-
-    for (sp = 0; sp < msg->len; sp++)
-    {
-        *((&CAN1TXDSR0) + sp) = msg->data[sp];            //写入数据
-    }
-
-    CAN1TXDLR = msg->len;  //写入数据长度
-    CAN1TXTBPR = msg->prty; //写入优先级
-    CAN1TFLG = send_buf;  //清TXx标志 缓冲器准备发送
-    re = TRUE;
     return re;
 }
 
@@ -144,46 +143,49 @@ Bool CAN1_GetMsg(CAN_MsgType *msg)
     {
       re = FALSE;
     }
-    if (CAN1RXIDR1_IDE)    //判断是不是扩展帧 IDE = Recessive (Extended Mode)
-    {
-        msg->id = ((unsigned long)(CAN1RXIDR0 & 0xff)) << 21;     //读标识符
-        msg->id = msg->id | (((unsigned long)(CAN1RXIDR1 & 0xe0)) << 13);
-        msg->id = msg->id | (((unsigned long)(CAN1RXIDR1 & 0x07)) << 15);
-        msg->id = msg->id | (((unsigned long)(CAN1RXIDR2 & 0xff)) << 7);
-        msg->id = msg->id | (((unsigned long)(CAN1RXIDR3 & 0xfe)) >> 1);
-        msg->IDE = TRUE;               //IDE为1是扩展帧
-        if (CAN1RXIDR3 & 0x01)         //判断是不是数据帧
-        {
-            msg->RTR = TRUE;
-        }
-        else
-        {
-            msg->RTR = FALSE;
-        }
-
-    }
     else
     {
-        msg->id = (unsigned long)(CAN1RXIDR0 <<3 ) |
-                  (unsigned long)(CAN1RXIDR1 >>5 ) ;      //读标识符
-
-        msg->IDE = FALSE;         //IDE为0是标准帧
-        if (CAN1RXIDR1 & 0x10)
+        if (CAN1RXIDR1_IDE)    //判断是不是扩展帧 IDE = Recessive (Extended Mode)
         {
-            msg->RTR = TRUE;          //判断是不是数据帧
+            msg->id = ((unsigned long)(CAN1RXIDR0 & 0xff)) << 21;     //读标识符
+            msg->id = msg->id | (((unsigned long)(CAN1RXIDR1 & 0xe0)) << 13);
+            msg->id = msg->id | (((unsigned long)(CAN1RXIDR1 & 0x07)) << 15);
+            msg->id = msg->id | (((unsigned long)(CAN1RXIDR2 & 0xff)) << 7);
+            msg->id = msg->id | (((unsigned long)(CAN1RXIDR3 & 0xfe)) >> 1);
+            msg->IDE = TRUE;               //IDE为1是扩展帧
+            if (CAN1RXIDR3 & 0x01)         //判断是不是数据帧
+            {
+                msg->RTR = TRUE;
+            }
+            else
+            {
+                msg->RTR = FALSE;
+            }
+
         }
         else
         {
-            msg->RTR = FALSE;
+            msg->id = (unsigned long)(CAN1RXIDR0 <<3 ) |
+                      (unsigned long)(CAN1RXIDR1 >>5 ) ;      //读标识符
+
+            msg->IDE = FALSE;         //IDE为0是标准帧
+            if (CAN1RXIDR1 & 0x10)
+            {
+                msg->RTR = TRUE;          //判断是不是数据帧
+            }
+            else
+            {
+                msg->RTR = FALSE;
+            }
         }
+        msg->len = CAN1RXDLR_DLC;         // 读取数据长度
+        for (sp = 0; sp < msg->len; sp++)
+        {
+            msg->data[sp] = *((&CAN1RXDSR0) + sp);    // 读取数据
+        }
+        CAN1RFLG = 0x01;         // 清RXF标志位(缓冲器准备接收)
+        re = TRUE;
     }
-    msg->len = CAN1RXDLR_DLC;         // 读取数据长度
-    for (sp = 0; sp < msg->len; sp++)
-    {
-        msg->data[sp] = *((&CAN1RXDSR0) + sp);    // 读取数据
-    }
-    CAN1RFLG = 0x01;         // 清RXF标志位(缓冲器准备接收)
-    re = TRUE;
     return re;
 }
 

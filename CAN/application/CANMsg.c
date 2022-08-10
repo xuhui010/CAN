@@ -4,7 +4,7 @@
 //±ê×¼Ö¡ID·¶Î§£º000-7FF      À©Õ¹Ö¡ID·¶Î§£º00000000-1FFFFFFF
 static CAN_MsgType CAN_msg1 =
 {
-    0x6AE,                               //±ê×¼Ö¡ Êý¾ÝÖ¡
+    0x6AE,                                //±ê×¼Ö¡ Êý¾ÝÖ¡
     0,
     0,
     {'A', 'B', 'C', 'D', 'E', 'F', 'G', '1'},
@@ -32,7 +32,7 @@ static CAN_MsgType CAN_msg3 =
     0,
 };
 
-void CAN_SendCallBack(void)          // ·¢ËÍ»Øµ÷º¯Êý PIT¶¨Ê±ÖÐ¶Ï·¢ËÍ£¬Ã¿¸ô500ms·¢ËÍÒ»´Î
+void CAN_SendCallBack(void)          // ·¢ËÍ»Øµ÷º¯Êý PIT¶¨Ê±ÖÐ¶Ï·¢ËÍ£¬Ã¿¸ô0.5s·¢ËÍÒ»´Î
 {
 	static long send_time = 0;
 	send_time++;
@@ -64,13 +64,12 @@ void CAN_SendCallBack(void)          // ·¢ËÍ»Øµ÷º¯Êý PIT¶¨Ê±ÖÐ¶Ï·¢ËÍ£¬Ã¿¸ô500ms·
 
 void CAN_RecCallBack(void)      //½ÓÊÕ±¨ÎÄÖÐ¶Ï
 {
-	CAN_MsgType msg_get;
+	CAN_MsgType get_msg;
 
-	if (CAN1_GetMsg(&msg_get))
+	if (CAN1_GetMsg(&get_msg))
 	{
-		if (!CAN1_SendMsg(&msg_get))
+		if (!CAN1_SendMsg(&get_msg))
 		{
-
 		}
 	}
 }
