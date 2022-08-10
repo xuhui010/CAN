@@ -10,7 +10,6 @@ typedef enum _CANMsg_NumType          //报文选择
     CANMsg_Num_3 ,
 } CANMsg_NumType;
 
-//void CANMsg_Send(CANMsg_NumType num);     //发送指定报文
 void CAN_SendCallBack(void);                   //PIT定时报文发送
 void CAN_RecCallBack(void);             //接收报文中断
 
