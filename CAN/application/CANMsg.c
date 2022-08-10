@@ -32,48 +32,28 @@ static CAN_MsgType CAN_msg3 =
     0,
 };
 
-void CANMsg_Send(CANMsg_NumType num)           //发送指定报文
-{
-    if (num == CANMsg_Num_1)
-    {
-        if (!CAN1_SendMsg(&CAN_msg1))
-        {
-        }
-    }
-    else if (num == CANMsg_Num_2)
-    {
-        if (!CAN1_SendMsg(&CAN_msg2))
-        {
-        }
-    }
-    else if (num == CANMsg_Num_3)
-    {
-        if (!CAN1_SendMsg(&CAN_msg3))
-        {
-        }
-    }
-    else
-    {
-    }
-}
-
-
 void CAN_SendCallBack(void)          // 发送回调函数 PIT定时中断发送，每隔500ms发送一次
 {
 	static long send_time = 0;
 	send_time++;
 
-	if(send_time == 1)
+	if (send_time == 1)
 	{
-		CANMsg_Send(CANMsg_Num_1);  //发送报文1
+		if (!CAN1_SendMsg(&CAN_msg1))   //发送报文1
+        {
+        }
 	}
 	else if (send_time == 2)
 	{
-		CANMsg_Send(CANMsg_Num_2);  //发送报文2
+		if (!CAN1_SendMsg(&CAN_msg2))  //发送报文2
+        {
+        }
 	}
-	else if (send_time == 3)
+	else if (send_time >= 3)
 	{
-		CANMsg_Send(CANMsg_Num_3);  //发送报文3
+		if (!CAN1_SendMsg(&CAN_msg3))  //发送报文3
+        {
+        }
 		send_time = 0;
 	}
 	else
@@ -94,3 +74,12 @@ void CAN_RecCallBack(void)      //接收报文中断
 		}
 	}
 }
+
+#pragma CODE_SEG __NEAR_SEG NON_BANKED       //中断函数置于非分页区内代码段
+
+void interrupt VectorNumber_Vcan1rx CAN_receive(void)
+{
+	CAN_RecCallBack();	//收到CAN报文触发中断
+}
+
+#pragma CODE_SEG DEFAULT
