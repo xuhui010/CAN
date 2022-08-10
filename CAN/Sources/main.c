@@ -9,12 +9,12 @@
 
 void main(void)
 {
-	DisableInterrupts;    //关中断
-	DIO_Init();			//初始化Dio
-	PLL_Init();			//初始化锁相环
+	DisableInterrupts;      //关中断
+	DIO_Init();			    //初始化Dio
+	PLL_Init();			    //初始化锁相环
 	CAN_Init(&CAN_Config);	//初始化CAN
-	PIT_Init();			//初始化PIT中断
-	EnableInterrupts;	//开中断
+	PIT_Init();			    //初始化PIT中断
+	EnableInterrupts;	    //开中断
 
 	for (;;)
 	{

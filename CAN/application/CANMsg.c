@@ -65,7 +65,6 @@ void CAN_SendCallBack(void)          // 发送回调函数 PIT定时中断发送，每隔0.5s发
 void CAN_RecCallBack(void)      //接收报文中断
 {
 	CAN_MsgType get_msg;
-
 	if (CAN1_GetMsg(&get_msg))
 	{
 		if (!CAN1_SendMsg(&get_msg))

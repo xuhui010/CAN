@@ -77,14 +77,14 @@ Bool CAN1_SendMsg(CAN_MsgType *msg)   //CAN1的发送函数
 
     if ((msg->len > CAN_MSG_MAXLEN) || (CAN1CTL0_SYNCH == 0)) //检查数据长度和总线时钟
     {
-      re = FALSE;
+        re = FALSE;
     }
     else
     {
         do
         {
-          CAN1TBSEL = CAN1TFLG;  //为获得下一个可用发送缓冲区,必须读取发送器标志寄存器的值，并写入发送缓冲器选择寄存器
-          send_buf = CAN1TBSEL;  //选择缓冲器，最低编号位设置为1,在第1位
+            CAN1TBSEL = CAN1TFLG;  //为获得下一个可用发送缓冲区,必须读取发送器标志寄存器的值，并写入发送缓冲器选择寄存器
+            send_buf = CAN1TBSEL;  //选择缓冲器，最低编号位设置为1,在第1位
         }
         while (!(send_buf));    //0 相关报文缓冲器被取消， 1 如果编号位最低，相关报文缓冲器被选中
 
@@ -141,7 +141,7 @@ Bool CAN1_GetMsg(CAN_MsgType *msg)
 
     if (!CAN1RFLG_RXF)   //检测接收标志
     {
-      re = FALSE;
+        re = FALSE;
     }
     else
     {

@@ -8,7 +8,7 @@ void PIT_Init(void)
 	PITMUX = 0X00;        //通道0、1、2、3使用微定时器基准0计数 写1代表以微定时器1计数
 	PITMTLD0 = 250 - 1;
 	PITLD0 = 64000 - 1;	  //T = (PITMTLD+1)*(PITLD+1)/Fbus = 500ms FBUS = 32mhz
-	PITINTE_PINTE0 = 1; // 中断使能
+	PITINTE_PINTE0 = 1;   // 中断使能
 	PITCFLMT_PITE = 1;    //使能PIT
 }
 
@@ -16,7 +16,7 @@ void PIT_Init(void)
 
 void interrupt VectorNumber_Vpit0 PIT0(void)
 {
-    PIT_IntCallBack();//PIT中断
+    PIT_IntCallBack();    //PIT中断
 }
 
 #pragma CODE_SEG DEFAULT

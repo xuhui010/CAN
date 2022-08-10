@@ -11,7 +11,7 @@ typedef enum _CAN_BpsType    //²¨ÌØÂÊÑ¡Ôñ
     CAN_Bps_125k = 0,
     CAN_Bps_250k ,
     CAN_Bps_500k ,
-}CAN_BpsType;
+} CAN_BpsType;
 
 typedef struct _CAN_CfgType
 {
