@@ -6,24 +6,24 @@ void CAN_Init(CAN_CfgType *CAN_cfg)       //初始化CAN
     int delay_time = 100;            //设置系统等待时间
     int time_1 = 0, time_2 = 0, time_3 = 0;
 
-    if (CAN1CTL0_INITRQ == 0)       // 查询是否进入初始化状态
+    if (CAN1CTL0_INITRQ == 0)       // 控制寄存器0，查询是否进入初始化状态
     {
         CAN1CTL0_INITRQ = 1;        // 进入初始化状态
     }
-    while ((CAN1CTL1_INITAK == 0) && (time_1 < delay_time))     //等待进入初始化状态
+    while ((CAN1CTL1_INITAK == 0) && (time_1 < delay_time))     //控制寄存器1，等待进入初始化状态
     {
         time_1++;
     }
-    CAN1BTR0_SJW = 0;         //设置同步跳转宽度
+    CAN1BTR0_SJW = 0;         //总线计时寄存器，设置同步跳转宽度1Tq时钟周期
     if (CAN_cfg->sp == 1)
     {
-        CAN1BTR1_SAMP = 0;     //采样
+        CAN1BTR1_SAMP = 0;     //采样，每位1个样本
     }
     else
     {
-        CAN1BTR1_SAMP = 1;
+        CAN1BTR1_SAMP = 1;    //采样，每位3个样本
     }
-    switch (CAN_cfg->bps)     //设置波特率
+    switch (CAN_cfg->bps)     //设置波特率  CANbps=1/TBit 采样率=(1+TSEG1)/(1+TSEG1+TSEG2)
     {
         case CAN_Bps_125k:
         {
@@ -34,7 +34,7 @@ void CAN_Init(CAN_CfgType *CAN_cfg)       //初始化CAN
         case CAN_Bps_250k:
         {
             CAN1BTR0_BRP = 0x07;
-            CAN1BTR1 |= 0x1C;  //设置时段1和时段2的Tq个数
+            CAN1BTR1 |= 0x1C;
         } break;
 
         case CAN_Bps_500k:
@@ -48,7 +48,7 @@ void CAN_Init(CAN_CfgType *CAN_cfg)       //初始化CAN
         } break;
     }
 
-    CAN1IDMR0 = 0xFF;   // 关闭滤波器
+    CAN1IDMR0 = 0xFF;   // 标识符屏蔽寄存器，写1关闭滤波器
     CAN1IDMR1 = 0xFF;
     CAN1IDMR2 = 0xFF;
     CAN1IDMR3 = 0xFF;
@@ -56,17 +56,17 @@ void CAN_Init(CAN_CfgType *CAN_cfg)       //初始化CAN
     CAN1IDMR5 = 0xFF;
     CAN1IDMR6 = 0xFF;
     CAN1IDMR7 = 0xFF;
-    CAN1CTL1  = 0xC0;  //使能MSCAN模块,设置为一般运行模式，使用总线时钟源
-    CAN1CTL0  = 0x00;  //返回一般模式运行
+    CAN1CTL1  = 0xC0;  //CANE位和CLKSRC位写1，使能MSCAN模块并设置时钟源为总线时钟
+    CAN1CTL0  = 0x00;  //写0，返回一般模式运行
     while (CAN1CTL1_INITAK && (time_2 < delay_time))     //等待回到一般运行模式
     {
         time_2++;
     }
-    while ((CAN1CTL0_SYNCH == 0) && (time_3 < delay_time)) //等待总线时钟同步
+    while ((CAN1CTL0_SYNCH == 0) && (time_3 < delay_time)) //SYNCH位写1表示MSCAN同步到总线时钟 等待总线时钟同步
     {
         time_3++;
     }
-    CAN1RIER_RXFIE = 1;         //禁止接收中断
+    CAN1RIER_RXFIE = 1;         //MSCAN接收器中断使能寄存器，RXFIE位写1，接收缓冲区已满导致接收方中断请求
 
 }
 
@@ -90,44 +90,44 @@ Bool CAN1_SendMsg(CAN_MsgType *msg)   //CAN1的发送函数
 
         if (msg->IDE)          //IDE为1时是扩展帧
         {
-            CAN1TXIDR0 = (unsigned char)(msg->id >> 21);      //写入标识符
-            CAN1TXIDR1 = (unsigned char)(msg->id >> 13) & 0xE0;
-            CAN1TXIDR1 |= 0x18;                       //写替代远程请求位SRR和扩展帧标志位IDE
-            CAN1TXIDR1 |= (unsigned char)(msg->id >> 15) & 0x07;
-            CAN1TXIDR2 = (unsigned char)(msg->id >> 7);
-            CAN1TXIDR3 = (unsigned char)(msg->id << 1);
-            if (msg->RTR)     //RTR位为1时是远程帧
+            CAN1TXIDR0 = (unsigned char)(msg->id >> 21);      //写入标识符 id28 ~ id21位
+            CAN1TXIDR1 = (unsigned char)(msg->id >> 13) & 0xE0; //&11100000,先写入id18~id20位
+            CAN1TXIDR1 |= 0x18;                              //00011000，写替代远程请求位SRR和扩展帧标志位IDE
+            CAN1TXIDR1 |= (unsigned char)(msg->id >> 15) & 0x07; //&0111,再写入id15 ~id17位
+            CAN1TXIDR2 = (unsigned char)(msg->id >> 7);          //写入id7 ~ id14位
+            CAN1TXIDR3 = (unsigned char)(msg->id << 1);          //写入id0 ~ id6位
+            if (msg->RTR)            //RTR位为1时是远程帧
             {
-                CAN1TXIDR3 |= 0x01;
+                CAN1TXIDR3 |= 0x01;  //RTR位写1
             }
-            else              //RTR位为0时是数据帧
+            else                     //RTR位为0时是数据帧
             {
-                CAN1TXIDR3 &= 0xFE;
+                CAN1TXIDR3 &= 0xFE;  //RTR位写0
             }
 
         }
-        else                  //IDE为0时是标准帧
+        else                         //IDE为0时是标准帧
         {
-            CAN1TXIDR0 = (unsigned char)(msg->id >> 3);       //写入标识符
-            CAN1TXIDR1 = (unsigned char)(msg->id << 5);
+            CAN1TXIDR0 = (unsigned char)(msg->id >> 3);       //写入标识符id3 ~ id10位
+            CAN1TXIDR1 = (unsigned char)(msg->id << 5);       //写入标识符id0 ~ id2位
             CAN1TXIDR1 &= 0xF7;
-            if (msg->RTR)    //RTR位为1时是远程帧
+            if (msg->RTR)            //RTR位为1时是远程帧
             {
-                CAN1TXIDR1 |= 0x10;
+                CAN1TXIDR1 |= 0x10;  //RTR位写1
             }
-            else             //RTR位为0时是数据帧
+            else                     //RTR位为0时是数据帧
             {
-                CAN1TXIDR1 &= 0xEF;
+                CAN1TXIDR1 &= 0xEF;  //RTR位写0
             }
         }
 
         for (sp = 0; sp < msg->len; sp++)
         {
-            *((&CAN1TXDSR0) + sp) = msg->data[sp];            //写入数据
+            *((&CAN1TXDSR0) + sp) = msg->data[sp];            //数据段寄存器,写入数据
         }
 
-        CAN1TXDLR = msg->len;  //写入数据长度
-        CAN1TXTBPR = msg->prty; //写入优先级
+        CAN1TXDLR_DLC = msg->len;  //数据长度寄存器,写入数据长度
+        CAN1TXTBPR = msg->prty; //发送缓冲器优先寄存器,写入优先级
         CAN1TFLG = send_buf;  //清TXx标志 缓冲器准备发送
         re = TRUE;
     }
@@ -145,7 +145,7 @@ Bool CAN1_GetMsg(CAN_MsgType *msg)
     }
     else
     {
-        if (CAN1RXIDR1_IDE)    //判断是不是扩展帧 IDE = Recessive (Extended Mode)
+        if (CAN1RXIDR1_IDE)    //判断是不是扩展帧
         {
             msg->id = ((unsigned long)(CAN1RXIDR0 & 0xff)) << 21;     //读标识符
             msg->id = msg->id | (((unsigned long)(CAN1RXIDR1 & 0xe0)) << 13);
@@ -155,11 +155,11 @@ Bool CAN1_GetMsg(CAN_MsgType *msg)
             msg->IDE = TRUE;               //IDE为1是扩展帧
             if (CAN1RXIDR3 & 0x01)         //判断是不是数据帧
             {
-                msg->RTR = TRUE;
+                msg->RTR = TRUE;           //RTR位写1 远程帧
             }
             else
             {
-                msg->RTR = FALSE;
+                msg->RTR = FALSE;          //RTR位写0 数据帧
             }
 
         }
@@ -169,15 +169,16 @@ Bool CAN1_GetMsg(CAN_MsgType *msg)
                       (unsigned long)(CAN1RXIDR1 >>5 ) ;      //读标识符
 
             msg->IDE = FALSE;         //IDE为0是标准帧
-            if (CAN1RXIDR1 & 0x10)
+            if (CAN1RXIDR1 & 0x10)    //判断是不是数据帧
             {
-                msg->RTR = TRUE;          //判断是不是数据帧
+                msg->RTR = TRUE;      //RTR位写1 远程帧
             }
             else
             {
-                msg->RTR = FALSE;
+                msg->RTR = FALSE;    //RTR位写0  数据帧
             }
         }
+        msg->prty = CAN1TXTBPR;           //读取数据优先级
         msg->len = CAN1RXDLR_DLC;         // 读取数据长度
         for (sp = 0; sp < msg->len; sp++)
         {
