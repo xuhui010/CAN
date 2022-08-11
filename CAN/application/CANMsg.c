@@ -32,29 +32,33 @@ static CAN_MsgType CAN_msg3 =
     0,
 };
 
-void CAN_SendCallBack(void)          // 发送回调函数 PIT定时中断发送，每隔0.5s发送一次
+void CAN_SendCallBack(void)          //PIT定时中断发送，每隔0.5s发送一次
 {
-	static long send_time = 0;
-	send_time++;
+	static long now_send_time = 0;
+	static long last_send_time = 0;
+	long time;
 
-	if (send_time == 1)
+	now_send_time++;
+	time = now_send_time - last_send_time;
+
+	if (time == 1)
 	{
 		if (!CAN1_SendMsg(&CAN_msg1))   //发送报文1
         {
         }
 	}
-	else if (send_time == 2)
+	else if (time == 2)
 	{
 		if (!CAN1_SendMsg(&CAN_msg2))  //发送报文2
         {
         }
 	}
-	else if (send_time >= 3)
+	else if (time >= 3)
 	{
 		if (!CAN1_SendMsg(&CAN_msg3))  //发送报文3
         {
         }
-		send_time = 0;
+		last_send_time = now_send_time;
 	}
 	else
 	{
@@ -62,12 +66,12 @@ void CAN_SendCallBack(void)          // 发送回调函数 PIT定时中断发送，每隔0.5s发
 	PITTF_PTF0 = 1;        //写1清除中断标志位
 }
 
-void CAN_RecCallBack(void)      //接收报文中断
+void CAN_RecevieCallBack(void)      //接收报文中断回调函数
 {
 	CAN_MsgType get_msg;
 	if (CAN1_GetMsg(&get_msg))
 	{
-		if (!CAN1_SendMsg(&get_msg))
+		if (!CAN1_SendMsg(&get_msg)) //将接收到的报文发送回去
 		{
 		}
 	}
@@ -77,7 +81,11 @@ void CAN_RecCallBack(void)      //接收报文中断
 
 void interrupt VectorNumber_Vcan1rx CAN_receive(void)
 {
-	CAN_RecCallBack();	//收到CAN报文触发中断
+	CAN_RecevieCallBack();	//收到CAN报文触发中断执行接收回调函数
 }
 
+void interrupt VectorNumber_Vpit0 PIT0(void)
+{
+    CAN_SendCallBack();    //在PIT中断中执行发送回调函数
+}
 #pragma CODE_SEG DEFAULT

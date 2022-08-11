@@ -11,12 +11,3 @@ void PIT_Init(void)
 	PITINTE_PINTE0 = 1;   // 中断使能
 	PITCFLMT_PITE = 1;    //使能PIT
 }
-
-#pragma CODE_SEG __NEAR_SEG NON_BANKED
-
-void interrupt VectorNumber_Vpit0 PIT0(void)
-{
-    PIT_IntCallBack();    //PIT中断
-}
-
-#pragma CODE_SEG DEFAULT

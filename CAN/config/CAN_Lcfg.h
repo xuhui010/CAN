@@ -6,6 +6,5 @@
 #include "derivative.h"
 
 extern CAN_CfgType CAN_Config;	//初始化配置
-void CAN_RecCallBack(void);
 
 #endif
