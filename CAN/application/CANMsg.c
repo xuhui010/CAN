@@ -34,31 +34,27 @@ static CAN_MsgType CAN_msg3 =
 
 void CAN_SendCallBack(void)          //PIT定时中断发送，每隔0.5s发送一次
 {
-	static long now_send_time = 0;
-	static long last_send_time = 0;
-	long time;
+	static long send_time = 0;
 
-	now_send_time++;
-	time = now_send_time - last_send_time;
-
-	if (time == 1)
+	send_time++;
+	if (send_time == 1)
 	{
 		if (!CAN1_SendMsg(&CAN_msg1))   //发送报文1
         {
         }
 	}
-	else if (time == 2)
+	else if (send_time == 2)
 	{
 		if (!CAN1_SendMsg(&CAN_msg2))  //发送报文2
         {
         }
 	}
-	else if (time >= 3)
+	else if (send_time >= 3)
 	{
 		if (!CAN1_SendMsg(&CAN_msg3))  //发送报文3
         {
         }
-		last_send_time = now_send_time;
+		send_time = 0;
 	}
 	else
 	{

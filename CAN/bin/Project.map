@@ -30,7 +30,7 @@ Entry point: 0xC000 (_Startup)
 _startupData is allocated at 0xC00F and uses 6 Bytes
 extern struct _tagStartup {
   unsigned nofZeroOut     1
-  _Range   pZeroOut       0x2100     65
+  _Range   pZeroOut       0x2100     61
   _Copy    *toCopyDownBeg 0xC08F
 } _startupData;
 
@@ -42,7 +42,7 @@ Section Name                    Size  Type     From       To       Segment
 .startData                        66     R     0xC00F     0xC050   ROM_C000
 NON_BANKED                        62     R     0xC051     0xC08E   ROM_C000
 .copy                             61     R     0xC08F     0xC0CB   ROM_C000
-.text                            907     R   0xFE8000   0xFE838A   PAGE_FE
+.text                            892     R   0xFE8000   0xFE837B   PAGE_FE
 .stack                           256   R/W     0x2000     0x20FF   RAM
 .data                             57   R/W     0x2100     0x2138   RAM
 .abs_section_8                     1   N/I        0x8        0x8   .absSeg0
@@ -785,12 +785,12 @@ NON_BANKED                        62     R     0xC051     0xC08E   ROM_C000
 .abs_section_3f2                   2   N/I      0x3F2      0x3F3   .absSeg737
 .abs_section_ffaa                  2     R     0xFFAA     0xFFAB   .absSeg738
 .abs_section_ff7a                  2     R     0xFF7A     0xFF7B   .absSeg739
-.bss                               8   R/W     0x2139     0x2140   RAM
+.bss                               4   R/W     0x2139     0x213C   RAM
 .vectSeg740_vect                   2     R     0xFFFE     0xFFFF   .vectSeg740
 
 Summary of section sizes per section type:
-READ_ONLY (R):         45D (dec:     1117)
-READ_WRITE (R/W):      141 (dec:      321)
+READ_ONLY (R):         44E (dec:     1102)
+READ_WRITE (R/W):      13D (dec:      317)
 NO_INIT (N/I):         383 (dec:      899)
 
 *********************************************************************************************
@@ -1565,16 +1565,15 @@ MODULE:                 -- rtshc12.c.o (ansixbf.lib) --
 - VARIABLES:
 MODULE:                 -- CANMsg.c.o --
 - PROCEDURES:
-     CAN_SendCallBack                        FE8042      61      97       2   .text       
-     CAN_RecevieCallBack                     FE80A3      1A      26       2   .text       
+     CAN_SendCallBack                        FE8042      52      82       2   .text       
+     CAN_RecevieCallBack                     FE8094      1A      26       2   .text       
      CAN_receive                               C085       5       5       1   NON_BANKED  
      PIT0                                      C08A       5       5       1   NON_BANKED  
 - VARIABLES:
      CAN_msg1                                  2100      12      18       1   .data       
      CAN_msg2                                  2112      12      18       1   .data       
      CAN_msg3                                  2124      12      18       1   .data       
-     now_send_time.1                           2139       4       4       6   .bss        
-     last_send_time.2                          213D       4       4       4   .bss        
+     send_time.1                               2139       4       4      10   .bss        
      _Vector_42                                FFAA       2       2       0   .abs_section_ffaa
      _Vector_66                                FF7A       2       2       0   .abs_section_ff7a
 MODULE:                 -- CAN_Lcfg.c.o --
@@ -1583,21 +1582,21 @@ MODULE:                 -- CAN_Lcfg.c.o --
      CAN_Config                                2136       3       3       1   .data       
 MODULE:                 -- CAN.c.o --
 - PROCEDURES:
-     CAN_Init                                FE80BD      B6     182       2   .text       
-     CAN1_SendMsg                            FE8173      EA     234      10   .text       
-     CAN1_GetMsg                             FE825D      E5     229       6   .text       
+     CAN_Init                                FE80AE      B6     182       2   .text       
+     CAN1_SendMsg                            FE8164      EA     234      10   .text       
+     CAN1_GetMsg                             FE824E      E5     229       6   .text       
 - VARIABLES:
 MODULE:                 -- Dio.c.o --
 - PROCEDURES:
-     DIO_Init                                FE8342       D      13       2   .text       
+     DIO_Init                                FE8333       D      13       2   .text       
 - VARIABLES:
 MODULE:                 -- PIT.c.o --
 - PROCEDURES:
-     PIT_Init                                FE834F      1F      31       2   .text       
+     PIT_Init                                FE8340      1F      31       2   .text       
 - VARIABLES:
 MODULE:                 -- PLL.c.o --
 - PROCEDURES:
-     PLL_Init                                FE836E      1D      29       2   .text       
+     PLL_Init                                FE835F      1D      29       2   .text       
 - VARIABLES:
 
 *********************************************************************************************
@@ -1608,7 +1607,7 @@ MODULE STATISTIC
   main.c.o                                     0     25      0
   Start12.c.o                                  0     56      0
   rtshc12.c.o (ansixbf.lib)                    0     52      0
-  CANMsg.c.o                                  62    133      4
+  CANMsg.c.o                                  58    118      4
   CAN_Lcfg.c.o                                 3      0      0
   CAN.c.o                                      0    645      0
   Dio.c.o                                      0     13      0
@@ -1625,7 +1624,7 @@ SECTION: ".text"
 SECTION: ".data"
   CAN_msg1 CAN_msg2 CAN_msg3 CAN_Config 
 SECTION: ".bss"
-  now_send_time.1 last_send_time.2 
+  send_time.1 
 SECTION: ".init"
   _Startup 
 SECTION: "NON_BANKED"
@@ -3857,8 +3856,7 @@ OBJECT LIST SORTED BY ADDRESS
      CAN_msg2                                  2112      12      18       1   .data       
      CAN_msg3                                  2124      12      18       1   .data       
      CAN_Config                                2136       3       3       1   .data       
-     now_send_time.1                           2139       4       4       6   .bss        
-     last_send_time.2                          213D       4       4       4   .bss        
+     send_time.1                               2139       4       4      10   .bss        
      _Startup                                  C000       F      15       0   .init       
      _LSHL                                     C051       D      13       2   NON_BANKED  
      _LSHRU                                    C05E       E      14       4   NON_BANKED  
@@ -3870,14 +3868,14 @@ OBJECT LIST SORTED BY ADDRESS
      _Vector_42                                FFAA       2       2       0   .abs_section_ffaa
      main                                    FE8000      19      25       2   .text       
      Init                                    FE8019      29      41       2   .text       
-     CAN_SendCallBack                        FE8042      61      97       2   .text       
-     CAN_RecevieCallBack                     FE80A3      1A      26       2   .text       
-     CAN_Init                                FE80BD      B6     182       2   .text       
-     CAN1_SendMsg                            FE8173      EA     234      10   .text       
-     CAN1_GetMsg                             FE825D      E5     229       6   .text       
-     DIO_Init                                FE8342       D      13       2   .text       
-     PIT_Init                                FE834F      1F      31       2   .text       
-     PLL_Init                                FE836E      1D      29       2   .text       
+     CAN_SendCallBack                        FE8042      52      82       2   .text       
+     CAN_RecevieCallBack                     FE8094      1A      26       2   .text       
+     CAN_Init                                FE80AE      B6     182       2   .text       
+     CAN1_SendMsg                            FE8164      EA     234      10   .text       
+     CAN1_GetMsg                             FE824E      E5     229       6   .text       
+     DIO_Init                                FE8333       D      13       2   .text       
+     PIT_Init                                FE8340      1F      31       2   .text       
+     PLL_Init                                FE835F      1D      29       2   .text       
 
 *********************************************************************************************
 UNUSED-OBJECTS SECTION
@@ -3942,8 +3940,8 @@ _Vector_66                USES PIT0
 _Vector_42                USES CAN_receive 
 main                      USES DIO_Init PLL_Init CAN_Config CAN_Init PIT_Init 
 Init                      USES _startupData 
-CAN_SendCallBack          USES now_send_time.1 _LINC last_send_time.2 CAN_msg1 
-                                CAN_msg2 CAN1_SendMsg CAN_msg3 _PITTF 
+CAN_SendCallBack          USES send_time.1 _LINC CAN_msg1 CAN_msg2 
+                                CAN1_SendMsg CAN_msg3 _PITTF 
 CAN_RecevieCallBack       USES CAN1_GetMsg CAN1_SendMsg 
 CAN_Init                  USES _CAN1CTL0 _CAN1CTL1 _CAN1BTR0 _CAN1BTR1 
                                 _CASE_CHECKED_BYTE _CAN1IDMR0 _CAN1IDMR1 _CAN1IDMR2 _CAN1IDMR3 
@@ -4013,5 +4011,5 @@ STATISTIC SECTION
 ExeFile:
 --------
 Number of blocks to be downloaded: 8
-Total size of all blocks to be downloaded: 1117
+Total size of all blocks to be downloaded: 1102
 
