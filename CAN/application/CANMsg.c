@@ -4,7 +4,7 @@
 //标准帧ID范围：000-7FF      扩展帧ID范围：00000000-1FFFFFFF
 static CAN_MsgType CAN_msg1 =
 {
-    0x6AE,                                //标准帧 数据帧
+    0x6AEU,                                //标准帧 数据帧
     0,
     0,
     {'A', 'B', 'C', 'D', 'E', 'F', 'G', '1'},
@@ -14,7 +14,7 @@ static CAN_MsgType CAN_msg1 =
 
 static CAN_MsgType CAN_msg2 =
 {
-    0x1608F168,                           //扩展帧 数据帧
+    0x1608F168UL,                           //扩展帧 数据帧
     1,
     0,
     {'A', 'B', 'C', 'D', 'E', 'F', 'G', '2'},
@@ -24,7 +24,7 @@ static CAN_MsgType CAN_msg2 =
 
 static CAN_MsgType CAN_msg3 =
 {
-    0x7CF,                               //标准帧 远程帧
+    0x7CFU,                               //标准帧 远程帧
     0,
     1,
     {'A', 'B', 'C', 'D', 'E', 'F', 'G', '3'},
@@ -59,7 +59,6 @@ void CAN_SendCallBack(void)          //PIT定时中断发送，每隔0.5s发送一次
 	else
 	{
 	}
-	PITTF_PTF0 = 1;        //写1清除中断标志位
 }
 
 void CAN_RecevieCallBack(void)      //接收报文中断回调函数
@@ -82,6 +81,7 @@ void interrupt VectorNumber_Vcan1rx CAN_receive(void)
 
 void interrupt VectorNumber_Vpit0 PIT0(void)
 {
+    PITTF_PTF0 = 1;        //写1清除中断标志位
     CAN_SendCallBack();    //在PIT中断中执行发送回调函数
 }
 #pragma CODE_SEG DEFAULT
