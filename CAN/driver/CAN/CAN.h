@@ -6,6 +6,7 @@
 
 #define CAN_MSG_MAXLEN 8            //宏定义数据位最大为8
 
+
 typedef enum _CAN_BpsType    //波特率选择
 {
     CAN_Bps_125k = 0,
@@ -29,9 +30,9 @@ typedef struct _CAN_MsgType             //构造CAN通信报文结构
     unsigned char prty;                 //设置优先级
 } CAN_MsgType;
 
-void CAN_Init(CAN_CfgType *CAN_cfg);     //CAN的初始化函数
-Bool CAN1_SendMsg(CAN_MsgType *msg);    //CAN1的发送函数
-Bool CAN1_GetMsg(CAN_MsgType *msg);    //CAN1的接收函数
+void CAN_Init(CAN_CfgType *CAN_cfg);    //CAN的初始化函数
+Bool CAN_SendMsg(CAN_MsgType *msg);     //CAN1的发送函数
+Bool CAN_GetMsg(CAN_MsgType *msg);      //CAN1的接收函数
 #endif
 
 

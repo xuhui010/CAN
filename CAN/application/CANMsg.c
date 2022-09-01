@@ -39,19 +39,19 @@ void CAN_SendCallBack(void)          //PIT定时中断发送，每隔0.5s发送一次
 	send_time++;
 	if (send_time == 1)
 	{
-		if (!CAN1_SendMsg(&CAN_msg1))   //发送报文1
+		if (!CAN_SendMsg(&CAN_msg1))   //发送报文1
         {
         }
 	}
 	else if (send_time == 2)
 	{
-		if (!CAN1_SendMsg(&CAN_msg2))  //发送报文2
+		if (!CAN_SendMsg(&CAN_msg2))  //发送报文2
         {
         }
 	}
 	else if (send_time >= 3)
 	{
-		if (!CAN1_SendMsg(&CAN_msg3))  //发送报文3
+		if (!CAN_SendMsg(&CAN_msg3))  //发送报文3
         {
         }
 		send_time = 0;
@@ -64,9 +64,9 @@ void CAN_SendCallBack(void)          //PIT定时中断发送，每隔0.5s发送一次
 void CAN_RecevieCallBack(void)      //接收报文中断回调函数
 {
 	CAN_MsgType get_msg;
-	if (CAN1_GetMsg(&get_msg))
+	if (CAN_GetMsg(&get_msg))
 	{
-		if (!CAN1_SendMsg(&get_msg)) //将接收到的报文发送回去
+		if (!CAN_SendMsg(&get_msg)) //将接收到的报文发送回去
 		{
 		}
 	}

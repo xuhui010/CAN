@@ -52,10 +52,9 @@ typedef struct _Node_OutputInfo_Type    //输出节点信息结构体
 
 
 extern void Node_Init(void);                   //Node初始化函数
-extern void Node_Act(void);                    //Node空函数
 extern void Node_InterruptON(void);
 extern void Node_InterruptOFF(void);
 extern void Node_Poll(void);                   //Node节点判断函数
-extern int Node_StateRead(Node_Information_Type state);//节点状态信息读取函数
+extern void Node_Act(void);                    //Node空函数
 
 #endif

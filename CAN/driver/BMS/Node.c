@@ -5,10 +5,6 @@ void Node_Init(void)                   //Node初始化函数
 {
 }
 
-void Node_Act(void)                    //Node空函数
-{
-}
-
 void Node_InterruptON(void)
 {
 }
@@ -48,24 +44,6 @@ void Node_Poll(void)                    //Node节点判断函数
 	}
 }
 
-int Node_StateRead(Node_Information_Type state)                         //节点状态信息读取函数
+void Node_Act(void)                    //Node空函数
 {
-    Node_Poll();
-    int re = 0;
-    if (state == Current_Node_State)
-    {
-        re = Node_OutputInfo.Current_Node;
-    }
-    else if (state == Next_Node_State)
-    {
-        re = Node_OutputInfo.Next_Node;
-    }
-    else if (state == Node_Branch_Num)
-    {
-        re = Node_OutputInfo.Branch_Num;
-    }
-    else
-    {
-    }
-    return re;
 }
