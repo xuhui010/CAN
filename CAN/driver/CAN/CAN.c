@@ -5,17 +5,19 @@
 void CAN_Init(CAN_CfgType *CAN_cfg)                 //初始化CAN
 {
     static CAN_NumType CANNum = (CAN_NumType)CAN3;  //选择CAN通道(CAN0~CAN4)
-    int delay_time = 100;                           //设置系统等待时间
-    int time_1 = 0, time_2 = 0, time_3 = 0;
+    int delay_time = 500;                           //设置系统等待时间
+    int time = 0;
+    CAN_cfg = &CAN_Config;                          //指向结构体变量的指针变量要先赋值
 
     if (CANCTL0(CANNum).Bits.INITRQ == 0)           //控制寄存器0，查询是否进入初始化状态
     {
         CANCTL0(CANNum).Bits.INITRQ = 1;            // 进入初始化状态
     }
-    while ((CANCTL1(CANNum).Bits.INITAK == 0) && (time_1 < delay_time))     //控制寄存器1，等待进入初始化状态
+    while ((CANCTL1(CANNum).Bits.INITAK == 0) && (time < delay_time))     //控制寄存器1，等待进入初始化状态
     {
-        time_1++;
+        time++;
     }
+    time = 0;
     CANBTR0(CANNum).MergedBits.grpSJW = 0;         //总线计时寄存器，设置同步跳转宽度1Tq时钟周期
     if (CAN_cfg->sp == 1)
     {
@@ -60,13 +62,14 @@ void CAN_Init(CAN_CfgType *CAN_cfg)                 //初始化CAN
     CANIDMR7(CANNum).Byte = 0xFF;
     CANCTL1(CANNum).Byte  = 0xC0;  //CANE位和CLKSRC位写1，使能MSCAN模块并设置时钟源为总线时钟
     CANCTL0(CANNum).Byte  = 0x00;  //写0，返回一般模式运行
-    while (CANCTL1(CANNum).Bits.INITAK && (time_2 < delay_time))     //等待回到一般运行模式
+    while (CANCTL1(CANNum).Bits.INITAK && (time < delay_time))     //等待回到一般运行模式
     {
-        time_2++;
+        time++;
     }
-    while ((CANCTL0(CANNum).Bits.SYNCH == 0) && (time_3 < delay_time)) //SYNCH位写1表示MSCAN同步到总线时钟 等待总线时钟同步
+    time = 0;
+    while ((CANCTL0(CANNum).Bits.SYNCH == 0) && (time < delay_time)) //SYNCH位写1表示MSCAN同步到总线时钟 等待总线时钟同步
     {
-        time_3++;
+        time++;
     }
     CANRIER(CANNum).Bits.RXFIE = 1;         //MSCAN接收器中断使能寄存器，RXFIE位写1，接收缓冲区已满导致接收方中断请求
 
