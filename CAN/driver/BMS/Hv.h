@@ -25,7 +25,7 @@ extern void Hv_Init(void);
 void Hv_InterruptON(void);
 void Hv_InterruptOFF(void);
 int HV_DetectInterval(uint32 data, Hv_AttributeType Attribute);
-extern uint16 Hv_GetAttribute(uint8 channel, Hv_AttributeType Attribute);
-extern uint16 Hv_Get(uint8 channel, Hv_AttributeType Attribute);
+extern uint16 Hv_GetAttribute(uint8 passage, Hv_AttributeType Attribute);
+extern uint16 Hv_Get(uint8 passage, Hv_AttributeType Attribute);
 
 #endif

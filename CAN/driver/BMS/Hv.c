@@ -40,13 +40,13 @@ Bool HV_DetectInterval(uint32 data, Hv_AttributeType Attribute)    //检测高�
 	return re;
 }
 
-uint16 Hv_GetAttribute(uint8 channel, Hv_AttributeType Attribute) //获取高压模块相应属性数据
+uint16 Hv_GetAttribute(uint8 passage, Hv_AttributeType Attribute) //获取高压模块相应属性数据
 {
 	uint16 re = 0;
 
 	if (Attribute == HV_VOLTAGE)
 	{
-		re = HV_VOLTAGE_(channel);         //获取电压数据
+		re = HV_VOLTAGE_(passage);         //获取电压数据
 	}
 	else
 	{
@@ -54,14 +54,14 @@ uint16 Hv_GetAttribute(uint8 channel, Hv_AttributeType Attribute) //获取高压
 	return re;
 }
 
-uint16 Hv_Get(uint8 channel, Hv_AttributeType Attribute)  //获取正确的电压函数
+uint16 Hv_Get(uint8 passage, Hv_AttributeType Attribute)  //获取正确的电压函数
 {
 	uint16 re = 0;
-	channel = 0;
+	passage = 0;
 
-	for (channel = 0; channel < HV_MAX_CHANNEL; channel++)
+	for (passage = 0; passage < HV_MAX_PASSAGE; passage++)
 	{
-		re = Hv_GetAttribute(channel, Attribute);
+		re = Hv_GetAttribute(passage, Attribute);
 		if (HV_DetectInterval(re, Attribute) == 0)       //返回值是0则表示数据在预设区间内
 		{
 			break;                                       //在预设区间内则提前跳出循环
