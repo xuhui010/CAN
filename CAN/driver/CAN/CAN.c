@@ -4,7 +4,7 @@
 
 void CAN_Init(CAN_CfgType *CAN_cfg)                 //初始化CAN
 {
-    static CAN_NumType CANNum = (CAN_NumType)CAN3;  //选择CAN通道(CAN0~CAN4)
+    static CAN_NumType CANNum = (CAN_NumType)CAN1;  //选择CAN通道(CAN0~CAN4)
     int delay_time = 500;                           //设置系统等待时间
     int time = 0;
     CAN_cfg = &CAN_Config;                          //指向结构体变量的指针变量要先赋值
@@ -77,7 +77,7 @@ void CAN_Init(CAN_CfgType *CAN_cfg)                 //初始化CAN
 
 Bool CAN_SendMsg(CAN_MsgType *msg)   //CAN的发送函数
 {
-    static CAN_NumType CANNum = (CAN_NumType)CAN3;  //选择CAN通道
+    static CAN_NumType CANNum = (CAN_NumType)CAN1;  //选择CAN通道
     unsigned char send_buf = 0, sp = 0;
     Bool re = FALSE;
 
@@ -142,7 +142,7 @@ Bool CAN_SendMsg(CAN_MsgType *msg)   //CAN的发送函数
 
 Bool CAN_GetMsg(CAN_MsgType *msg)
 {
-    static CAN_NumType CANNum = (CAN_NumType)CAN3;  //选择CAN通道
+    static CAN_NumType CANNum = (CAN_NumType)CAN1;  //选择CAN通道
     unsigned char sp = 0;
     Bool re = FALSE;
 

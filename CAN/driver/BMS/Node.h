@@ -15,21 +15,15 @@ typedef enum _Node_Num_Type             //列举节点名称
     Node_3,
 } Node_Num_Type;
 
-typedef enum _Node_Information_Type     //列举节点信息
-{
-    Current_Node_State,                 //当前节点状态
-    Next_Node_State,                    //下一节点状态
-    Node_Branch_Num,                    //节点分支数量
-} Node_Information_Type;
-
 typedef enum _Node_StateConditions_Type //列举进入状态条件
 {
-    Precharged_Fault = 1,                   //预充故障
-    Precharged_Not_Fault = 0,               //预充无故障
-    Precharged_Timeout = 1,                 //预充超时
-    Precharged_Finish = 1,                  //预充完成
-    Precharged_Not_Finish = 0,              //预充未完成
-}Node_StateConditions_Type;
+    Precharged_Fault,                   //预充故障
+    Precharged_Not_Fault,               //预充无故障
+    Precharged_Timeout = 1,             //预充超时
+    Precharged_Not_Timeout,             //预充未超时
+    Precharged_Finish = 0,              //预充完成
+    Precharged_Not_Finish,              //预充未完成
+} Node_StateConditions_Type;
 
 typedef struct _Node_StateJudge_Type    //节点状态判断结构体
 {
@@ -54,9 +48,9 @@ typedef struct _Node_State_Type         //节点状态信息(枚举和结构体�
 
 typedef struct _Node_OutputInfo_Type    //输出节点信息结构体
 {
-    Node_Num_Type Current_Node;
-    int Next_Node;
-    int Branch_Num;
+    Node_Num_Type Current_Node;         //当前节点
+    int Next_Node;                      //下一节点
+    int Branch_Num;                     //当前节点分支数量
 } Node_OutputInfo_Type;
 
 
@@ -65,5 +59,5 @@ extern void Node_InterruptON(void);
 extern void Node_InterruptOFF(void);
 extern void Node_Poll(void);                            //Node节点判断函数
 extern void Node_NoAct(void);                           //Node空函数
-extern uint32 NodeInfRead(Node_Information_Type inf);   //节点信息读取函数
+
 #endif

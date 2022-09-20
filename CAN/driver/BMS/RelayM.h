@@ -8,13 +8,23 @@ typedef unsigned char      uint8;
 typedef unsigned short int uint16;
 typedef unsigned int       uint32;
 
+typedef enum _RelayM_NameType   //继电器种类枚举
+{
+    PreCharged_Relay,           //预充继电器
+    TotalPositive_Relay,        //总正继电器
+    TotalNegative_Relay,        //总负继电器
+    FastCharging_Relay,         //快充继电器
+    SlowCharging_Relay,         //慢充继电器
+    Heating_Relay,              //加热继电器
+} RelayM_NameType;
+
 typedef struct _RelayM_AttributeType //构建继电器属性结构体
 {
+    RelayM_NameType RelayM_Name;     //继电器类型选择
     uint32 actual_status;            //继电器实际状态
     uint32 on_time;                  //继电器闭合耗时
     uint32 off_time;                 //继电器断开耗时
     uint32 res_value;                //继电器内阻设置
-    uint32 passage;                  //继电器通道设置
 } RelayM_AttributeType;
 
 typedef enum _Std_RetureType
@@ -28,6 +38,12 @@ typedef enum _Std_RetureType
     RELAYM_RES_VALUE,
     RELAYM_NOT_RES_VALUE,
 } Std_RetureType;
+
+typedef enum _Std_SwitchType         //继电器开关状态返回值
+{
+    RELAYM_SWITCH_ON,
+    RELAYM_SWITCH_OFF,
+} Std_SwitchType;
 
 typedef struct _RelayM_Fn_Type
 {
@@ -74,7 +90,7 @@ extern uint32 RelayM_GetOffTime(uint8 passage);                          //获�
 extern Bool RelayM_SetRes(uint8 passage ,uint32 data);                   //设置继电器内阻值
 extern uint32 RelayM_GetRes(uint8 passage);                              //获取继电器内阻值
 extern RelayM_FaultType RelayM_GetFault(uint8 passage);                  //继电器故障检测
-extern Bool RelayM_Control(uint8 passage, RelayM_Fn_Type *fn, RelayM_ControlType ctl, uint32 data);  //继电器控制状态获取(目标通道,判断，属性,值）
+extern Std_SwitchType RelayM_Control(uint8 passage, RelayM_Fn_Type *fn, RelayM_ControlType ctl, uint32 data);  //继电器控制状态获取(目标通道,判断，属性,值）
 extern uint32 RelayM_Acture(uint8 passage, RelayM_ActureType attribute);                             //继电器实际状态获取(通道，属性)
 
 #endif
