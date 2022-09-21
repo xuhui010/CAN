@@ -13,282 +13,142 @@ void RelayM_InterruptOFF(void)									//关中断
 {
 }
 
-Bool RelayM_SetStatus(uint8 passage, uint32 data)  				//设置继电器种类和状态
+void RelayM_SetStatus(uint8 passage, uint16 data)  				//设置继电器开关状态
 {
-	Bool re = FALSE;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		RELAYM_NAME_(passage) = passage;						//设置继电器当前实际种类
-		RELAYM_CUR_NAME(passage) = passage;						//设置继电器当前控制种类
-		RELAYM_STATUS_(passage) = data;
-		RELAYM_CUR_STATUS_(passage) = data;
-		re = TRUE;
-	}
-	else
-	{
-		re = FALSE;
-	}
-	return re;
+	RelayM_StateCfg[passage].cfg->control_status = data;
+	RelayM_StateCfg[passage].cfg->actual_status = data;
 }
 
-uint32 RelayM_GetControlStatus(uint8 passage)					//获取继电器控制状态
+uint16 RelayM_GetControlStatus(uint8 passage)					//获取继电器开关控制状态
 {
-	uint32 re = 0;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		re = RELAYM_CUR_STATUS_(passage);
-	}
-	else
-	{
-		re = 1;
-	}
-	return re;
+	return RelayM_StateCfg[passage].cfg->control_status;
 }
 
-uint32 RelayM_GetActureStatus(uint8 passage)					//获取继电器实际状态
+uint16 RelayM_GetActureStatus(uint8 passage)					//获取继电器开关实际状态
 {
-	uint32 re = 0;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		re = RELAYM_STATUS_(passage);
-	}
-	else
-	{
-		re = 1;
-	}
-	return re;
+	return RelayM_StateCfg[passage].cfg->actual_status;
 }
 
-Bool RelayM_SetOnTime(uint8 passage, uint32 data)				//设置继电器闭合时间
+void RelayM_SetOnTime(uint8 passage, uint16 ontime)				//设置继电器闭合时间
 {
-	Bool re = FALSE;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		RELAYM_ON_TIME_(passage) = data;
-		RELAYM_CUR_ON_TIME_(passage) = data;
-		re = TRUE;
-	}
-	else
-	{
-		re = FALSE;
-	}
-	return re;
+	RelayM_StateCfg[passage].cfg->on_time = ontime;
 }
 
-uint32 RelayM_GetOnTime(uint8 passage)							//获取继电器闭合时间
+uint16 RelayM_GetOnTime(uint16 ontime)							//获取继电器实际闭合时间
 {
-	uint32 re = 0;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		re = RELAYM_ON_TIME_(passage);
-	}
-	else
-	{
-		re = 1;
-	}
-	return re;
+	ontime = 50;
+	return ontime;
 }
 
-Bool RelayM_SetOffTime(uint8 passage ,uint32 data) 				//设置继电器断开时间
+void RelayM_SetOffTime(uint8 passage ,uint16 offtime) 			//设置继电器断开时间
 {
-    Bool re = FALSE;
-    if (passage < RELAYM_MAX_NUM)
-    {
-    	RELAYM_OFF_TIME_(passage) = data;
-    	RELAYM_CUR_OFF_TIME_(passage) = data;
-    	re = TRUE;
-    }
-    else
-    {
-    	re = FALSE;
-    }
-    return re;
+    RelayM_StateCfg[passage].cfg->off_time = offtime;
 }
 
-uint32 RelayM_GetOffTime(uint8 passage)             			//获取继电器断开时间
+uint16 RelayM_GetOffTime(uint16 offtime)             			//获取继电器实际断开时间
 {
-    uint32 re = 0;
-    if (passage < RELAYM_MAX_NUM)
-    {
-    	re = RELAYM_OFF_TIME_(passage);
-    }
-    else
-    {
-    	re = 1;
-    }
-    return re;
+    offtime = 100;
+    return offtime;
 }
 
-Bool RelayM_SetRes(uint8 passage ,uint32 data)     				//设置继电器内阻值
+void RelayM_SetRes(uint8 passage ,uint16 res)     				//设置继电器内阻值
 {
-	Bool re = FALSE;
-	if (passage < RELAYM_MAX_NUM)
-	{
-		RELAYM_RES_VALUE_(passage) = data;
-		RELAYM_CUR_RES_VALUE_(passage) = data;
-		re = TRUE;
-	}
-    else
-    {
-    	re = FALSE;
-    }
-    return re;
+	RelayM_StateCfg[passage].cfg->res_value = res;
 }
 
-uint32 RelayM_GetRes(uint8 passage)                 			//获取继电器内阻值
+uint16 RelayM_GetRes(uint16 res)                 				//获取继电器实际内阻值
 {
-    uint32 re = 0;
-    if (passage < RELAYM_MAX_NUM)
-    {
-    	re = RELAYM_RES_VALUE_(passage);
-    }
-    else
-    {
-    	re = 1;
-    }
-    return re;
+    res = 200;
+    return res;
 }
 
 
-RelayM_FaultType RelayM_GetFault(uint8 passage)   										//继电器故障检测
+RelayM_FaultType RelayM_GetFault(uint8 passage)   				//继电器故障检测
 {
 	RelayM_FaultType re;
-	if (passage < RELAYM_MAX_NUM)                               						//数组越界保护
+	uint16 ctlre = RelayM_GetControlStatus(passage);
+	uint16 ature = RelayM_GetActureStatus(passage);
+
+	if (ctlre != ature) 										//继电器控制状态和实际状态不同，则继电器出现故障
 	{
-		if (RELAYM_CUR_STATUS_(passage) != RELAYM_STATUS_(passage))						//继电器控制状态和实际状态不同，则继电器出现故障，判断故障类型
+		if (ctlre == 0 && ature == 1)							//控制继电器开关断开，实际状态闭合，则继电器粘连
 		{
-			if ((RELAYM_CUR_STATUS_(passage) == 0) && (RELAYM_STATUS_(passage) == 1))	//控制继电器开关断开，实际状态闭合，则继电器粘连
-			{
-				re = RELAYM_ADHESION;             										//继电器粘连
-			}
-			else if ((RELAYM_CUR_STATUS_(passage) == 1) && (RELAYM_STATUS_(passage) == 0))//控制继电器开关闭合，实际状态断开，则继电器开路
-			{
-				re = RELAYM_OPEN_LOOP;													//继电器开路
-			}
-			else
-			{
-			}
+			re = RELAYM_ADHESION;
+		}
+		else if (ctlre == 1 && ature == 0)						//控制继电器开关闭合，实际状态断开，则继电器开路
+		{
+			re = RELAYM_OPEN_LOOP;								//继电器开路
 		}
 		else
 		{
-			re = RELAYM_NO_FAULT;														//继电器无故障
-		}
-	}
-	return re;
-}
-
-Std_SwitchType RelayM_Control(uint8 passage, RelayM_Fn_Type *fn, RelayM_ControlType ctl, uint32 data)	//继电器控制状态获取(继电器种类,判断，属性,值）
-{
-	Std_SwitchType re ;
-	if (passage < RELAYM_MAX_NUM)                     					//越界保护
-	{
-		RELAYM_NAME_(passage) = passage;								//设置继电器当前实际种类
-		RELAYM_CUR_NAME(passage) = passage;								//设置继电器当前控制种类
-		switch (ctl)
-		{
-			case RELAYM_CTRL_STATUS:
-	        {
-	            if ((fn->status == RELAYM_STATUS) && RelayM_SetStatus(passage, data))						//判断继电器是否拥有控制属性
-	            {
-	            	re = RELAYM_SWITCH_ON;
-	            }
-	            else
-	            {
-	            	re = RELAYM_SWITCH_OFF;
-	            }
-	        } break;
-
-	        case RELAYM_CTRL_ON_TIME:
-	        {
-	            if ((fn->on_time == RELAYM_ON_TIME) && RelayM_SetOnTime(passage, data))						//判断继电器是否拥有闭合时间属性
-	            {
-	            	re = RELAYM_SWITCH_ON;
-	            }
-	            else
-	            {
-	            	re = RELAYM_SWITCH_OFF;
-	            }
-	        } break;
-
-	        case RELAYM_CTRL_OFF_TIME:
-	        {
-	        	if ((fn->off_time == RELAYM_OFF_TIME) && RelayM_SetOffTime(passage, data))					//判断继电器是否拥有断开时间属性
-	        	{
-	        		re = RELAYM_SWITCH_ON;
-	        	}
-	        	else
-	        	{
-	        		re = RELAYM_SWITCH_OFF;
-	        	}
-	        } break;
-
-	        case RELAYM_CTRL_RES_VALUE:
-	        {
-	        	if ((fn->res_value == RELAYM_RES_VALUE) && RelayM_SetRes(passage, data))					//判断继电器是否拥有控制阻值属性
-	        	{
-	        		re = RELAYM_SWITCH_ON;
-	        	}
-	        	else
-	        	{
-	        		re = RELAYM_SWITCH_OFF;
-	        	}
-	        } break;
-
-	        default:
-	        {
-	        } break;
 		}
 	}
 	else
 	{
-		re = RELAYM_SWITCH_OFF;
+		re = RELAYM_NO_FAULT;									//继电器无故障
 	}
 	return re;
 }
 
-uint32 RelayM_Acture(uint8 passage, RelayM_ActureType attribute)    //继电器实际状态获取(通道，属性)
+void RelayM_Control(uint8 passage, RelayM_CtlAttributeType ctl, uint16 data)		//继电器控制(继电器种类，属性,值）
 {
-	uint32 re = 0;
-	if (passage < RELAYM_MAX_NUM)									//越界保护
+	switch (ctl)
 	{
-		RELAYM_NAME_(passage) = passage;							//设置继电器当前实际种类
-		RELAYM_CUR_NAME(passage) = passage;							//设置继电器当前控制种类
-		switch (attribute)
+		case RELAYM_CONTROL_SWITCH:
 		{
-			case RELAYM_ACTURE_CONTROL:
-			{
-				re = RelayM_GetControlStatus(passage);
-			} break;
+			RelayM_SetStatus(passage, data);
+		} break;
 
-			case RELAYM_ACTURE_STATUS:
-			{
-				re = RelayM_GetActureStatus(passage);
-			} break;
+		case RELAYM_CONTROL_ON_TIME:
+		{
+			RelayM_SetOnTime(passage, data);
+		} break;
 
-			case RELAYM_ACTURE_ON_TIME:
-			{
-				re = RelayM_GetOnTime(passage);
-			} break;
+		case RELAYM_CONTROL_OFF_TIME:
+		{
+			RelayM_SetOffTime(passage, data);
+		} break;
 
-			case RELAYM_ACTURE_OFF_TIME:
-			{
-				re = RelayM_GetOffTime(passage);
-			} break;
+		case RELAYM_CONTROL_RES_VALUE:
+		{
+			RelayM_SetRes(passage, data);
+		} break;
 
-			case RELAYM_ACTURE_RES_VALUE:
-			{
-				re = RelayM_GetRes(passage);
-			} break;
-
-			default:
-	        {
-	        } break;
-
-		}
+		default:
+		{
+		} break;
 	}
-	else
+}
+
+uint16 RelayM_Acture(uint8 passage, RelayM_AtuAttributeType act)    //继电器实际状态获取(通道，属性)
+{
+	uint16 re = 0;
+
+	switch (act)
 	{
-		re = 1;
+		case RELAYM_ACTURE_SWITCH:
+		{
+			re = RelayM_GetActureStatus(passage);
+		} break;
+
+		case RELAYM_ACTURE_ON_TIME:
+		{
+			re = RelayM_GetOnTime(passage);
+		} break;
+
+		case RELAYM_ACTURE_OFF_TIME:
+		{
+			re = RelayM_GetOffTime(passage);
+		} break;
+
+		case RELAYM_ACTURE_RES_VALUE:
+		{
+			re = RelayM_GetRes(passage);
+		} break;
+
+		default:
+	    {
+	    } break;
 	}
 	return re;
 }
