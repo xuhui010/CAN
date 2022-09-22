@@ -1,6 +1,8 @@
 #ifndef __RELAY_CFG_H
 #define __RELAY_CFG_H
 
+#include "hidef.h"
+#include "derivative.h"
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
 #include "RelayM_Pbcfg.h"

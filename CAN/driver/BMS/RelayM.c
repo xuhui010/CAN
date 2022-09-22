@@ -15,18 +15,17 @@ void RelayM_InterruptOFF(void)									//关中断
 
 void RelayM_SetStatus(uint8 passage, uint16 data)  				//设置继电器开关状态
 {
-	RelayM_StateCfg[passage].cfg->control_status = data;
-	RelayM_StateCfg[passage].cfg->actual_status = data;
+	RelayM_StateCfg[passage].cfg->switch_status = data;
 }
 
 uint16 RelayM_GetControlStatus(uint8 passage)					//获取继电器开关控制状态
 {
-	return RelayM_StateCfg[passage].cfg->control_status;
+	return RelayM_StateCfg[passage].cfg->switch_status;
 }
 
 uint16 RelayM_GetActureStatus(uint8 passage)					//获取继电器开关实际状态
 {
-	return RelayM_StateCfg[passage].cfg->actual_status;
+	return RelayM_ActureCfg[passage].act->switch_status;
 }
 
 void RelayM_SetOnTime(uint8 passage, uint16 ontime)				//设置继电器闭合时间
@@ -34,10 +33,9 @@ void RelayM_SetOnTime(uint8 passage, uint16 ontime)				//设置继电器闭合�
 	RelayM_StateCfg[passage].cfg->on_time = ontime;
 }
 
-uint16 RelayM_GetOnTime(uint16 ontime)							//获取继电器实际闭合时间
+uint16 RelayM_GetOnTime(uint8 passage)							//获取继电器实际闭合时间
 {
-	ontime = 50;
-	return ontime;
+	return RelayM_ActureCfg[passage].act->on_time;
 }
 
 void RelayM_SetOffTime(uint8 passage ,uint16 offtime) 			//设置继电器断开时间
@@ -45,10 +43,9 @@ void RelayM_SetOffTime(uint8 passage ,uint16 offtime) 			//设置继电器断开
     RelayM_StateCfg[passage].cfg->off_time = offtime;
 }
 
-uint16 RelayM_GetOffTime(uint16 offtime)             			//获取继电器实际断开时间
+uint16 RelayM_GetOffTime(uint8 passage)             			//获取继电器实际断开时间
 {
-    offtime = 100;
-    return offtime;
+    return RelayM_ActureCfg[passage].act->off_time;
 }
 
 void RelayM_SetRes(uint8 passage ,uint16 res)     				//设置继电器内阻值
@@ -56,10 +53,9 @@ void RelayM_SetRes(uint8 passage ,uint16 res)     				//设置继电器内阻值
 	RelayM_StateCfg[passage].cfg->res_value = res;
 }
 
-uint16 RelayM_GetRes(uint16 res)                 				//获取继电器实际内阻值
+uint16 RelayM_GetRes(uint8 passage)                 				//获取继电器实际内阻值
 {
-    res = 200;
-    return res;
+    return RelayM_ActureCfg[passage].act->res_value;
 }
 
 
@@ -90,26 +86,26 @@ RelayM_FaultType RelayM_GetFault(uint8 passage)   				//继电器故障检测
 	return re;
 }
 
-void RelayM_Control(uint8 passage, RelayM_CtlAttributeType ctl, uint16 data)		//继电器控制(继电器种类，属性,值）
+void RelayM_Control(uint8 passage, RelayM_Fn_Type fn, uint16 data)		//继电器控制(继电器种类，属性,值）
 {
-	switch (ctl)
+	switch (fn)
 	{
-		case RELAYM_CONTROL_SWITCH:
+		case RELAYM_SWITCH:							      				//控制开关状态
 		{
 			RelayM_SetStatus(passage, data);
 		} break;
 
-		case RELAYM_CONTROL_ON_TIME:
+		case RELAYM_ON_TIME:											//控制闭合时间
 		{
 			RelayM_SetOnTime(passage, data);
 		} break;
 
-		case RELAYM_CONTROL_OFF_TIME:
+		case RELAYM_OFF_TIME:											//控制断开时间
 		{
 			RelayM_SetOffTime(passage, data);
 		} break;
 
-		case RELAYM_CONTROL_RES_VALUE:
+		case RELAYM_RES_VALUE:											//控制内阻大小
 		{
 			RelayM_SetRes(passage, data);
 		} break;
@@ -120,28 +116,28 @@ void RelayM_Control(uint8 passage, RelayM_CtlAttributeType ctl, uint16 data)		//
 	}
 }
 
-uint16 RelayM_Acture(uint8 passage, RelayM_AtuAttributeType act)    //继电器实际状态获取(通道，属性)
+uint16 RelayM_Acture(uint8 passage, RelayM_Fn_Type fn)    //继电器实际状态获取(通道，属性)
 {
 	uint16 re = 0;
 
-	switch (act)
+	switch (fn)
 	{
-		case RELAYM_ACTURE_SWITCH:
+		case RELAYM_SWITCH:							      //获取开关实际状态
 		{
 			re = RelayM_GetActureStatus(passage);
 		} break;
 
-		case RELAYM_ACTURE_ON_TIME:
+		case RELAYM_ON_TIME:							  //获取闭合实际时间
 		{
 			re = RelayM_GetOnTime(passage);
 		} break;
 
-		case RELAYM_ACTURE_OFF_TIME:
+		case RELAYM_OFF_TIME:							  //获取断开实际时间
 		{
 			re = RelayM_GetOffTime(passage);
 		} break;
 
-		case RELAYM_ACTURE_RES_VALUE:
+		case RELAYM_RES_VALUE:							  //获取内阻实际大小
 		{
 			re = RelayM_GetRes(passage);
 		} break;

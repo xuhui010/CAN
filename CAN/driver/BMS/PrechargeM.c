@@ -3,41 +3,42 @@
 #include "Node.h"
 #include "RelayM_Lcfg.h"
 
+void delay(uint8 count)				    //延时函数
+{
+	uint8 i = 1;
+
+	for(i=1; i <= count; i++)
+	;
+}
+
 void PrechargeM_Init(void)          	//初始化函数
 {
 }
 
 void PrechargeM_StartPre(void)      	//启动预充函数，闭合预充继电器开关
 {
-    if (RelayM_Control(0, &RelayM_FnCfg, RELAYM_CTRL_STATUS, 1))
-    {
-    }
+	RelayM_Control(0, RELAYM_SWITCH, 1);
 }
 
 void PrechargeM_StopPre(void)       	//停止预充函数，断开预充继电器开关
 {
-	if (RelayM_Control(0, &RelayM_FnCfg, RELAYM_CTRL_STATUS, 0))
-	{
-	}
+	RelayM_Control(0, RELAYM_SWITCH, 0);
 }
 
 void PrechargeM_StartMaster(void)   	//闭合总正继电器开关
 {
-	if (RelayM_Control(1, &RelayM_FnCfg, RELAYM_CTRL_STATUS, 1))
-	{
-	}
+	RelayM_Control(1, RELAYM_SWITCH, 1);
 }
 
 void PrechargeM_StopMaster(void)    	//断开总正继电器开关
 {
-	if (RelayM_Control(1, &RelayM_FnCfg, RELAYM_CTRL_STATUS, 0))
-	{
-	}
+	RelayM_Control(1, RELAYM_SWITCH, 0);
 }
 
 void PrechargeM_Change(void)        	//继电器切换函数，闭合总正或断开预充
 {
 	PrechargeM_StartMaster();			//闭合总正
+	delay(50);							//短暂延时
 	PrechargeM_StopPre();				//断开预充
 }
 

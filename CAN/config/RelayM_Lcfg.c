@@ -1,6 +1,6 @@
 #include "RelayM_Lcfg.h"
 
-RelayM_ControlType RelayM_Control0 =
+/*RelayM_ControlType RelayM_Control0 =
 {
 	0,
 	0,
@@ -52,14 +52,23 @@ RelayM_ControlType RelayM_Control5 =
 	0,
 	0,
 	0,
+};*/
+RelayM_ControlType RelayM_ControlNum[RELAYM_MAX_NUM] =
+{
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0},
+	{0,0,0,0}
 };
 
-RelayM_StateType RelayM_StateCfg[RELAYM_MAX_NUM] =
+RelayM_ControlType RelayM_ActureNum[RELAYM_MAX_NUM] =
 {
-    {PreCharged_Relay, &RelayM_Control0},
-    {TotalPositive_Relay, &RelayM_Control1},
-    {TotalNegative_Relay, &RelayM_Control2},
-    {FastCharging_Relay, &RelayM_Control3},
-    {SlowCharging_Relay, &RelayM_Control4},
-    {Heating_Relay, &RelayM_Control5,}
+	{1,20,50,100},
+	{1,25,55,120},
+	{1,30,60,140},
+	{1,35,65,160},
+	{1,40,70,180},
+	{1,45,75,200}
 };
