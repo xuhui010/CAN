@@ -3,6 +3,7 @@
 
 #include "hidef.h"
 #include "derivative.h"
+#include "PrechargeM.h"
 
 typedef unsigned char      uint8;
 typedef unsigned short int uint16;
@@ -46,18 +47,26 @@ typedef struct _Node_State_Type         //节点状态信息(枚举和结构体�
     const Node_StateCfg_Type* state;    //节点状态信息配置结构体指针 只读，无法通过指针state去修改所指内容
 } Node_State_Type;
 
+typedef struct _Testtype
+{
+    void (*PreAct[6])(void);
+    int (*PreJudge[3])(void);
+} Testtype;
+
 typedef struct _Node_OutputInfo_Type    //输出节点信息结构体
 {
     Node_Num_Type Current_Node;         //当前节点
     int Next_Node;                      //下一节点
     int Branch_Num;                     //当前节点分支数量
+    int re;                             //存放当前分支函数的返回值
+    uint8 JudgeNum;                     //分支判断函数编号
+    uint8 ActNum;                       //动作响应函数编号
 } Node_OutputInfo_Type;
-
 
 extern void Node_Init(void);                            //Node初始化函数
 extern void Node_InterruptON(void);
 extern void Node_InterruptOFF(void);
 extern void Node_Poll(void);                            //Node节点判断函数
 extern void Node_NoAct(void);                           //Node空函数
-
+extern void Test();
 #endif

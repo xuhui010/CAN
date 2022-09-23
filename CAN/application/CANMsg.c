@@ -85,9 +85,12 @@ void CAN_RecevieCallBack(void)      //接收报文中断回调函数
 void CAN_Send_NodeStateCfg(void)                                            //将节点当前状态通过报文发送出去
 {
 	//extern Node_OutputInfo_Type Node_OutputInfo;
-	CAN_NodeStateCfg.data[0] = (uint8)Node_OutputInfo.Current_Node;			//读取当前节点状态赋值到data[0]字段
-	CAN_NodeStateCfg.data[1] = (uint8)Node_OutputInfo.Next_Node;	    	//读取下一节点状态赋值到data[1]字段
-	CAN_NodeStateCfg.data[2] = (uint8)Node_OutputInfo.Branch_Num;	    	//读取当前节点分支数赋值到data[2]字段
+	CAN_NodeStateCfg.data[0] = (uint8)Node_OutputInfo.Current_Node;			//读取当前节点编号赋值到data[0]字段
+	CAN_NodeStateCfg.data[1] = (uint8)Node_OutputInfo.JudgeNum;	    		//读取当前预充状态判断函数赋值到data[1]字段
+	CAN_NodeStateCfg.data[2] = (uint8)Node_OutputInfo.re;	    			//读取当前预充状态判断函数的返回值赋值到data[2]字段
+	CAN_NodeStateCfg.data[3] = (uint8)Node_OutputInfo.ActNum;				//读取当前预充状态的动作响应函数赋值到data[3]字段
+ 	CAN_NodeStateCfg.data[4] = (uint8)Node_OutputInfo.Next_Node;			//读取下一节点编号赋值到data[4]字段
+ 	CAN_NodeStateCfg.data[5] = (uint8)Node_OutputInfo.Branch_Num;			//读取当前节点总分支数赋值到data[5]字段
 	if (CAN_SendMsg(&CAN_NodeStateCfg) == TRUE)								//将重构的报文通过CAN发出
 	{
 	}

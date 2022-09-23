@@ -30,7 +30,7 @@ uint32 Hv_Get(uint8 passage, Hv_VoltageType Hv_Voltage)     //获取当前电压
 	return re;
 }
 
-uint8 Hv_VoltageJudge(uint8 passage, HV_ThresholdType *cfg)	  //判断电压函数
+/*uint8 Hv_VoltageJudge(uint8 passage, HV_ThresholdType *cfg)	  //判断电压函数
 {
 	uint8 re = 0;
 
@@ -57,6 +57,7 @@ uint8 Hv_TempJudge(uint8 passage, HV_ThresholdType *cfg)	//判断温度函数
 	{
 		re = 1;                  						//温度过低返回1
 	}
+	return re;
 }
 
 void Hv_Discharge(uint8 passage)						//控制电池放电函数
@@ -125,7 +126,7 @@ uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前
 		}
 	}
 	return re;
-}
+}*/
 
 Bool Hv_InsulationDetect(uint8 passage, Hv_CircuitType Hv_Circuit, Hv_ResistanceType *res)  //高压模块绝缘检测函数
 {

@@ -36,7 +36,29 @@ void Node_Poll(void)                    					  //Node节点判断函数
 			if (Node_State.state->state[i].Branch()			  //判断状态分支与进入状态条件是否相同
 				== Node_State.state->state[i].condition)
 			{
+					uint8 x = 0, y = 0;
+  				Testtype *test;
+  				test = &a;
+
+				for (x = 0; x < 3; x++)
+				{
+					if (test->PreJudge[x] == Node_State.state->state[i].Branch)
+					{
+						Node_OutputInfo.JudgeNum = x;
+						break;
+					}
+				}
+				Node_OutputInfo.re = test->PreJudge[x]();
+				//Node_OutputInfo.re = Node_State.state->state[i].Branch();
 				Node_State.state->state[i].Response();		  //选择状态响应函数
+				for (y = 0; y < 6; y++)
+				{
+					if (test->PreAct[y] == Node_State.state->state[i].Response)
+					{
+						Node_OutputInfo.ActNum = y;
+						break;
+					}
+				}
 				Node_InterruptOFF();
 				Node_Num = Node_State.state->state[i].Next_Node;//获取下一节点号
 				Node_OutputInfo.Next_Node = Node_Num;           //输出下一节点号
@@ -49,4 +71,43 @@ void Node_Poll(void)                    					  //Node节点判断函数
 
 void Node_NoAct(void)                    						//Node空函数
 {
+}
+
+/*int (*PreJudge[3])(void) =
+{
+	PrechargeM_IsFault,
+	PrechargeM_IsFail,
+	PrechargeM_IsFinish,
+};
+  uint8 x = 0;
+  Testtype *test;
+  test = &a;
+for (x = 0; x < 3; x++)
+{
+	if (Node_State.state->state[i].Branch() = test->PreJudge[x]())
+	{
+		Node_OutputInfo.y = x;
+	}
+}
+
+
+
+void (*PreAct[6])(void) =
+{
+	Node_NoAct,
+	PrechargeM_StartPre,
+	PrechargeM_StopPre,
+	PrechargeM_StartMaster,
+	PrechargeM_StopMaster,
+	PrechargeM_Change,
+};*/
+
+void Test()
+{
+  Testtype *test;
+  test = &a;
+
+  if(test->PreJudge[0]())
+  {
+  };
 }

@@ -1,3 +1,5 @@
+#include "RelayM.h"
+#include "RelayM_cfg.h"
 #include "RelayM_Lcfg.h"
 
 /*RelayM_ControlType RelayM_Control0 =

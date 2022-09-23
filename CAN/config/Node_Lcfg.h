@@ -10,5 +10,6 @@ extern const Node_StateJudge_Type Node_PreFinish_Judge[];
 extern const Node_StateJudge_Type Node_DischargeFault_Judge[];
 extern const Node_StateCfg_Type Node_StateCfg[];
 extern Node_OutputInfo_Type Node_OutputInfo;
+extern Testtype a;
 
 #endif

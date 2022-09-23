@@ -1,4 +1,6 @@
 #include "RelayM_Pbcfg.h"
+#include "RelayM_cfg.h"
+#include "RelayM_Lcfg.h"
 
 RelayM_StateType RelayM_StateCfg[RELAYM_MAX_NUM] =
 {

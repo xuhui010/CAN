@@ -42,14 +42,14 @@ typedef struct _HV_ThresholdType        //阈值结构体
     uint32 coolingdata;                 //散热阈值
 } HV_ThresholdType;
 
-typedef struct _Node_HvState_Type       //高压节点状态机
+/*typedef struct _Node_HvState_Type       //高压节点状态机
 {
     Node_Num_Type Current_Node;         //当前节点
     uint8 (*Judge)(uint8 passage, HV_ThresholdType *cfg); //函数指针 选择相应判断函数
     Node_StateConditions_Type condition;//进入状态条件
     void (*act)(uint8 passage);         //函数指针 选择相应动作函数
     Node_Num_Type Next_Node;            //下一节点
-} Node_HvState_Type;
+} Node_HvState_Type;*/
 
 typedef enum _HVIL_StateType            //高压互锁故障诊断
 {

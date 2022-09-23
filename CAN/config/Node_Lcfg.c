@@ -34,3 +34,21 @@ const Node_StateCfg_Type Node_StateCfg[] =                                      
 };
 
 Node_OutputInfo_Type Node_OutputInfo;
+
+Testtype a =
+{
+    {
+    Node_NoAct,
+    PrechargeM_StartPre,
+    PrechargeM_StopPre,
+    PrechargeM_StartMaster,
+    PrechargeM_StopMaster,
+    PrechargeM_Change
+    },
+
+    {
+    PrechargeM_IsFault,
+    PrechargeM_IsFail,
+    PrechargeM_IsFinish
+    },
+};

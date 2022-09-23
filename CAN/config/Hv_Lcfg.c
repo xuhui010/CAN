@@ -1,7 +1,7 @@
 #include "Hv.h"
 #include "Hv_Lcfg.h"
 
-HV_VoltageDataType Hv_VoltageSample[HV_MAX_PASSAGE] =         //å®šä¹‰ç»“æ„ä½“å˜é‡ï¼Œç”¨æ•°ç»„å­˜æ”¾é«˜å‹æ•°æ®ç¤ºä¾‹
+HV_VoltageDataType Hv_VoltageSample[HV_MAX_PASSAGE] =         //¶¨Òå½á¹¹Ìå±äÁ¿£¬ÓÃÊı×é´æ·Å¸ßÑ¹Êı¾İÊ¾Àı
 {
 	{86, 80, -16},
 	{88, 86, 0},
@@ -11,7 +11,7 @@ HV_VoltageDataType Hv_VoltageSample[HV_MAX_PASSAGE] =         //å®šä¹‰ç»“æ„ä½“å
 	{116, 108, 64}
 };
 
-HV_ThresholdType HV_Threshold =						//é…ç½®å……æ”¾ç”µå’Œæ•£çƒ­åŠ çƒ­çš„é˜ˆå€¼
+HV_ThresholdType HV_Threshold =						//ÅäÖÃ³ä·ÅµçºÍÉ¢ÈÈ¼ÓÈÈµÄãĞÖµ
 {
 	90,
 	110,
@@ -19,13 +19,13 @@ HV_ThresholdType HV_Threshold =						//é…ç½®å……æ”¾ç”µå’Œæ•£çƒ­åŠ çƒ­çš„é˜ˆå€¼
 	35,
 };
 
-Hv_ResistanceType Hv_ResDCCfg =					 	//ç›´æµç”µè·¯ä¸‹ç»ç¼˜ç”µé˜»æ•°æ®ç¤ºä¾‹(å®é™…æƒ…å†µä¸­éœ€è¦å®æ—¶æ£€æµ‹è·å– ç”µæ¡¥æ³•æˆ–äº¤æµæ³¨å…¥æ³•)
+Hv_ResistanceType Hv_ResDCCfg =					 	//Ö±Á÷µçÂ·ÏÂ¾øÔµµç×èÊı¾İÊ¾Àı(Êµ¼ÊÇé¿öÖĞĞèÒªÊµÊ±¼ì²â»ñÈ¡ µçÇÅ·¨»ò½»Á÷×¢Èë·¨)
 {
 	12000,
 	18000,
 };
 
-Hv_ResistanceType Hv_ResACCfg =					 	//äº¤æµç”µè·¯ä¸‹ç»ç¼˜ç”µé˜»æ•°æ®ç¤ºä¾‹(å®é™…æƒ…å†µä¸­éœ€è¦å®æ—¶æ£€æµ‹è·å– ç”µæ¡¥æ³•æˆ–äº¤æµæ³¨å…¥æ³•)
+Hv_ResistanceType Hv_ResACCfg =					 	//½»Á÷µçÂ·ÏÂ¾øÔµµç×èÊı¾İÊ¾Àı(Êµ¼ÊÇé¿öÖĞĞèÒªÊµÊ±¼ì²â»ñÈ¡ µçÇÅ·¨»ò½»Á÷×¢Èë·¨)
 {
 	52000,
 	56000,

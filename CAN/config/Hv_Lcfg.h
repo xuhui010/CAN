@@ -5,17 +5,17 @@
 #include "derivative.h"
 #include "Hv.h"
 
-#define HV_MAX_PASSAGE 6U           //é«˜å‹æ¨¡å—æœ€å¤§é€šé“ä¸ªæ•°
+#define HV_MAX_PASSAGE 6U           //¸ßÑ¹Ä£¿é×î´óÍ¨µÀ¸öÊı
 
-#define Hv_Buffered_Vol 10U			//å……æ”¾ç”µç®¡ç†ç¼“å†²ç”µå‹
-#define Hv_Buffered_Temp 5U			//ç”µæ± çƒ­ç®¡ç†ç¼“å†²æ¸©åº¦
+#define Hv_Buffered_Vol 10U			//³ä·Åµç¹ÜÀí»º³åµçÑ¹
+#define Hv_Buffered_Temp 5U			//µç³ØÈÈ¹ÜÀí»º³åÎÂ¶È
 
-#define Hv_RES_DC_MIN   (100U)		//ç›´æµç”µè·¯ç»ç¼˜ç”µé˜»æœ€å°å€¼ä¸º100æ¬§å§†/V
-#define Hv_RES_AC_MIN   (500U)		//äº¤æµç”µè·¯ç»ç¼˜ç”µé˜»æœ€å°å€¼ä¸º500æ¬§å§†/V
+#define Hv_RES_DC_MIN   (100U)		//Ö±Á÷µçÂ·¾øÔµµç×è×îĞ¡ÖµÎª100Å·Ä·/V
+#define Hv_RES_AC_MIN   (500U)		//½»Á÷µçÂ·¾øÔµµç×è×îĞ¡ÖµÎª500Å·Ä·/V
 
-#define HV_BAT_(X)  (*(uint32 *)(&(Hv_VoltageSample[X].BAT)))  //BATç”µå‹
-#define HV_V1_(X)   (*(uint32 *)(&(Hv_VoltageSample[X].V1)))   //V1ç”µå‹
-#define HV_TEMP_(X) (*(uint32 *)(&(Hv_VoltageSample[X].TEMP))) //ç”µæ± æ¸©åº¦
+#define HV_BAT_(X)  (*(uint32 *)(&(Hv_VoltageSample[X].BAT)))  //BATµçÑ¹
+#define HV_V1_(X)   (*(uint32 *)(&(Hv_VoltageSample[X].V1)))   //V1µçÑ¹
+#define HV_TEMP_(X) (*(uint32 *)(&(Hv_VoltageSample[X].TEMP))) //µç³ØÎÂ¶È
 
 extern HV_VoltageDataType Hv_VoltageSample[HV_MAX_PASSAGE];
 extern HV_ThresholdType HV_Threshold;
