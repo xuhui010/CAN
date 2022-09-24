@@ -108,7 +108,7 @@ void Hv_Heating(uint8 passage)							//控制电池加热函数
 		HV_TEMP_(passage)++;
 	}
 	while (!(HV_TEMP_(passage) > (cfg->coolingdata + Hv_Buffered_Temp)));
-}
+}*/
 
 uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前电路绝缘电阻理论上最小值
 {
@@ -126,7 +126,7 @@ uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前
 		}
 	}
 	return re;
-}*/
+}
 
 Bool Hv_InsulationDetect(uint8 passage, Hv_CircuitType Hv_Circuit, Hv_ResistanceType *res)  //高压模块绝缘检测函数
 {

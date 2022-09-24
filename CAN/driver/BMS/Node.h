@@ -26,34 +26,29 @@ typedef enum _Node_StateConditions_Type //列举进入状态条件
     Precharged_Not_Finish,              //预充未完成
 } Node_StateConditions_Type;
 
-typedef struct _Node_StateJudge_Type    //节点状态判断结构体
+typedef struct _Node_StateJudge_Type    //节点状态机结构体
 {
     Node_Num_Type Current_Node;         //当前节点
-    int (*Branch)(void);                //状态分支 选择相应函数作为结构体成员
+    int (*Branch)(void);                //状态判断函数指针
     Node_StateConditions_Type condition;//进入状态条件
-    void (*Response)(void);             //状态响应 选择相应函数作为结构体成员
+    void (*Response)(void);             //状态响应函数指针
     Node_Num_Type Next_Node;            //下一节点
 } Node_StateJudge_Type;
 
-typedef struct _Node_StateCfg_Type      //节点状态信息配置
+typedef struct _Node_StateCfg_Type      //节点信息关联结构体
 {
-    uint8 BranchNum;                    //定义节点分支数量
-    const Node_StateJudge_Type* state;  //节点状态判断结构体指针 只读，无法通过指针state去修改所指内容
+    Node_Num_Type NodeNum;              //节点名称
+    const Node_StateJudge_Type* act;    //节点状态机选择
+    uint8 BranchNum;                    //节点分支数
 } Node_StateCfg_Type;
 
-typedef struct _Node_State_Type         //节点状态信息(枚举和结构体嵌套)
-{
-    Node_Num_Type NodeNum;              //节点成员选择
-    const Node_StateCfg_Type* state;    //节点状态信息配置结构体指针 只读，无法通过指针state去修改所指内容
-} Node_State_Type;
-
-typedef struct _Testtype
+typedef struct _Testtype                //预充函数指针数组存放结构体
 {
     void (*PreAct[6])(void);
     int (*PreJudge[3])(void);
 } Testtype;
 
-typedef struct _Node_OutputInfo_Type    //输出节点信息结构体
+typedef struct _Node_OutputInfo_Type    //节点流程信息结构体
 {
     Node_Num_Type Current_Node;         //当前节点
     int Next_Node;                      //下一节点
@@ -68,5 +63,5 @@ extern void Node_InterruptON(void);
 extern void Node_InterruptOFF(void);
 extern void Node_Poll(void);                            //Node节点判断函数
 extern void Node_NoAct(void);                           //Node空函数
-extern void Test();
+
 #endif

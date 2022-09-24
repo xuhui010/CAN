@@ -3,7 +3,7 @@
 #include "PrechargeM.h"
 #include "Node.h"
 
-
+#define HV_MAX_PASSAGE 6U           //��ѹģ�����ͨ������
 /*通过结构体二维数组，关联起每个节点和下一个将要执行的节点的关系*/
 const Node_StateJudge_Type Node_Fault_Judge[] =                                     //判断故障节点
 {
@@ -26,11 +26,11 @@ const Node_StateJudge_Type Node_DischargeFault_Judge[] =                        
     {Node_3, PrechargeM_IsFault, Precharged_Not_Fault, Node_NoAct, Node_3 }              //当前节点Node3 判断是否故障 否 NULL 下一节点Node3
 };
 
-const Node_StateCfg_Type Node_StateCfg[] =                                          //节点状态转换表
+const Node_StateCfg_Type Node_StateCfg[] =
 {
-    {2, Node_Fault_Judge},
-    {4, Node_PreFinish_Judge},
-    {2, Node_DischargeFault_Judge}
+    {Node_1, Node_Fault_Judge, 2},
+    {Node_2, Node_PreFinish_Judge, 4},
+    {Node_3, Node_DischargeFault_Judge, 2}
 };
 
 Node_OutputInfo_Type Node_OutputInfo;
