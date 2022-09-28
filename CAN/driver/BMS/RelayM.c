@@ -1,5 +1,6 @@
 #include "RelayM.h"
 #include "RelayM_Lcfg.h"
+#include "RelayM_Pbcfg.h"
 
 void RelayM_Init(void)              							//继电器模块初始化函数
 {

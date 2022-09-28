@@ -29,6 +29,7 @@ Hv.c.o                                  Model: BANKED,        Lang: ANSI-C
 Node.c.o                                Model: BANKED,        Lang: ANSI-C
 PrechargeM.c.o                          Model: BANKED,        Lang: ANSI-C
 RelayM.c.o                              Model: BANKED,        Lang: ANSI-C
+RelayM_Pbcfg.c.o                        Model: BANKED,        Lang: ANSI-C
 
 *********************************************************************************************
 STARTUP SECTION
@@ -1620,7 +1621,6 @@ MODULE:                 -- Node_Lcfg.c.o --
 MODULE:                 -- RelayM_Lcfg.c.o --
 - PROCEDURES:
 - VARIABLES:
-     RelayM_StateCfg                           21AE      18      24       4   .data       
      RelayM_ControlNum                         21C6      30      48       6   .bss        
 MODULE:                 -- Hv.c.o --
 - PROCEDURES:
@@ -1651,6 +1651,10 @@ MODULE:                 -- RelayM.c.o --
      RelayM_SetRes                           FE8935      13      19       2   .text       
      RelayM_Control                          FE8948      3B      59       4   .text       
 - VARIABLES:
+MODULE:                 -- RelayM_Pbcfg.c.o --
+- PROCEDURES:
+- VARIABLES:
+     RelayM_StateCfg                           21AE      18      24       4   .data       
 
 *********************************************************************************************
 MODULE STATISTIC
@@ -1668,11 +1672,12 @@ MODULE STATISTIC
   PLL.c.o                                      0     29      0
   Hv_Lcfg.c.o                                 44      0      0
   Node_Lcfg.c.o                              112      0      0
-  RelayM_Lcfg.c.o                             72      0      0
+  RelayM_Lcfg.c.o                             48      0      0
   Hv.c.o                                       0    284      0
   Node.c.o                                     2    315      0
   PrechargeM.c.o                               0     12      0
   RelayM.c.o                                   0    135      0
+  RelayM_Pbcfg.c.o                            24      0      0
   other                                      256     68    202
 
 *********************************************************************************************
@@ -4005,7 +4010,7 @@ Node_Lcfg.c.o:
   Node_Fault_Judge Node_PreFinish_Judge Node_DischargeFault_Judge 
   Node_StateCfg a 
 RelayM_Lcfg.c.o:
-  RelayM_ActureNum RelayM_ActureCfg 
+  RelayM_ActureNum 
 Hv.c.o:
   Hv_ResDCCfg Hv_ResACCfg 
 Node.c.o:
@@ -4014,6 +4019,8 @@ PrechargeM.c.o:
   Precharge_Cfg 
 RelayM.c.o:
   RelayM_ActureCfg 
+RelayM_Pbcfg.c.o:
+  RelayM_ActureNum RelayM_ActureCfg 
 
 *********************************************************************************************
 COPYDOWN SECTION

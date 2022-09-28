@@ -28,4 +28,5 @@ extern void PrechargeM_Change(void);        //继电器切换函数，闭合总�
 extern int PrechargeM_IsFail(void);       			//超时判断函数
 extern int PrechargeM_IsFinish(void);	//预充完成判断函数
 extern int PrechargeM_IsFault(void);      			//故障判断函数
+
 #endif

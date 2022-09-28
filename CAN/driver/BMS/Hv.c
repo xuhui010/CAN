@@ -19,16 +19,13 @@ uint32 Hv_Get(uint8 passage, Hv_VoltageType Hv_Voltage)     //获取当前电压
 {
 	uint32 re = 0;
 
-	if (passage < HV_MAX_PASSAGE)							//越界保护
+	if (Hv_Voltage == HV_VOLTAGE_BAT)					//获取当前BAT电源电压
 	{
-		if (Hv_Voltage == HV_VOLTAGE_BAT)					//获取当前BAT电源电压
-		{
-			re = HV_BAT_(passage);
-		}
-		else if (Hv_Voltage == HV_VOLTAGE_V1)				//获取当前V1电路电压
-		{
-			re = HV_V1_(passage);
-		}
+		re = HV_BAT_(passage);
+	}
+	else if (Hv_Voltage == HV_VOLTAGE_V1)				//获取当前V1电路电压
+	{
+		re = HV_V1_(passage);
 	}
 	return re;
 }
