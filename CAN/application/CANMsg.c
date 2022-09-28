@@ -107,7 +107,8 @@ void interrupt VectorNumber_Vpit0 PIT0(void)
 {
     PITTF_PTF0 = 1;        //写1清除中断标志位
     //CAN_SendCallBack();    //在PIT中断中执行发送回调函数
-    Node_Poll();
+    //Pre_Node_Poll();
+    Hv_Node_Poll();
     CAN_Send_NodeStateCfg();
 }
 

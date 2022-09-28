@@ -19,20 +19,25 @@ uint32 Hv_Get(uint8 passage, Hv_VoltageType Hv_Voltage)     //获取当前电压
 {
 	uint32 re = 0;
 
-	if (Hv_Voltage == HV_VOLTAGE_BAT)					//获取当前BAT电源电压
+	if (passage < HV_MAX_PASSAGE)							//越界保护
 	{
-		re = HV_BAT_(passage);
-	}
-	else if (Hv_Voltage == HV_VOLTAGE_V1)				//获取当前V1电路电压
-	{
-		re = HV_V1_(passage);
+		if (Hv_Voltage == HV_VOLTAGE_BAT)					//获取当前BAT电源电压
+		{
+			re = HV_BAT_(passage);
+		}
+		else if (Hv_Voltage == HV_VOLTAGE_V1)				//获取当前V1电路电压
+		{
+			re = HV_V1_(passage);
+		}
 	}
 	return re;
 }
 
-/*uint8 Hv_VoltageJudge(uint8 passage, HV_ThresholdType *cfg)	  //判断电压函数
+uint8 Hv_VoltageJudge(uint8 passage)	  //判断电压函数
 {
 	uint8 re = 0;
+	HV_ThresholdType *cfg;
+	cfg = &HV_Threshold;
 
 	if (HV_V1_(passage) > cfg->dischargedata)			//V1单体电压过高，大于放电电压阈值
 	{
@@ -42,12 +47,18 @@ uint32 Hv_Get(uint8 passage, Hv_VoltageType Hv_Voltage)     //获取当前电压
 	{
 		re = 1;			    							//电压过低返回1
 	}
+	else if ((HV_V1_(passage) >= cfg->chargedata) && (HV_V1_(passage) <= cfg->dischargedata))
+	{
+		re = 2;											//电压正常返回2
+	}
 	return re;
 }
 
-uint8 Hv_TempJudge(uint8 passage, HV_ThresholdType *cfg)	//判断温度函数
+uint8 Hv_TempJudge(uint8 passage)		//判断温度函数
 {
 	uint8 re = 0;
+	HV_ThresholdType *cfg;
+	cfg = &HV_Threshold;
 
 	if (HV_TEMP_(passage) > cfg->coolingdata)			//电池温度过高，大于散热阈值
 	{
@@ -56,6 +67,10 @@ uint8 Hv_TempJudge(uint8 passage, HV_ThresholdType *cfg)	//判断温度函数
 	else if (HV_TEMP_(passage) < cfg->heatingdata)		//电池温度过低，小于加热阈值
 	{
 		re = 1;                  						//温度过低返回1
+	}
+	else if ((HV_TEMP_(passage) >= cfg->heatingdata) && (HV_TEMP_(passage) <= cfg->coolingdata))
+	{
+		re = 2;											//温度正常返回2
 	}
 	return re;
 }
@@ -69,7 +84,7 @@ void Hv_Discharge(uint8 passage)						//控制电池放电函数
 	{
 		HV_V1_(passage)--;
 	}
-	while (!((HV_V1_(passage) + Hv_Buffered_Vol) < cfg->dischargedata));
+	while (!((HV_V1_(passage) + Hv_Buffered_Vol) < cfg->chargedata));	   //使用策略一
 }
 
 void Hv_Charge(uint8 passage)							//控制电池充电函数
@@ -81,7 +96,7 @@ void Hv_Charge(uint8 passage)							//控制电池充电函数
 	{
 		HV_V1_(passage)++;
 	}
-	while (!(HV_V1_(passage) > (cfg->chargedata + Hv_Buffered_Vol)));
+	while (!(HV_V1_(passage) > (cfg->dischargedata + Hv_Buffered_Vol)));	//使用策略一
 }
 
 void Hv_Cooling(uint8 passage)							//控制电池散热函数
@@ -91,10 +106,10 @@ void Hv_Cooling(uint8 passage)							//控制电池散热函数
 
 	do
 	{
-		RelayM_Control(5, RELAYM_SWITCH, 0)    			//断开加热继电器开关
+		RelayM_Control(5, RELAYM_SWITCH, 0);    			//断开加热继电器开关
 		HV_TEMP_(passage)--;
 	}
-	while (!((HV_TEMP_(passage) + Hv_Buffered_Temp) < cfg->coolingdata));
+	while (!((HV_TEMP_(passage) + Hv_Buffered_Temp) < cfg->heatingdata));	//使用策略一
 }
 
 void Hv_Heating(uint8 passage)							//控制电池加热函数
@@ -104,11 +119,16 @@ void Hv_Heating(uint8 passage)							//控制电池加热函数
 
 	do
 	{
-		RelayM_Control(5, RELAYM_SWITCH, 1)   //闭合加热继电器开关
+		RelayM_Control(5, RELAYM_SWITCH, 1);   //闭合加热继电器开关
 		HV_TEMP_(passage)++;
 	}
-	while (!(HV_TEMP_(passage) > (cfg->coolingdata + Hv_Buffered_Temp)));
-}*/
+	while (!(HV_TEMP_(passage) > (cfg->coolingdata + Hv_Buffered_Temp)));	//使用策略一
+}
+
+void Hv_NoAct(uint8 passage)							//空动作响应函数
+{
+    delay(passage);
+}
 
 uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前电路绝缘电阻理论上最小值
 {
