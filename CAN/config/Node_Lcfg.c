@@ -40,7 +40,7 @@ Node_HvState_Type Node_Temp_Judge[] =
     {Node_5, Hv_TempJudge, Hv_Temp_Normal, Hv_NoAct, Node_4}
 };
 
-Node_StateCfg_Type Node_StateCfg[3] =
+Node_StateCfg_Type Node_StateCfg[] =
 {
     {Node_1, Node_Fault_Judge, 2},
     {Node_2, Node_PreFinish_Judge, 4},

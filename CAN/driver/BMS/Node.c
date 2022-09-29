@@ -68,7 +68,7 @@ void Hv_Node_Poll(void)                    					  	//高压节点判断函数
 {
 	static Node_Num_Type Node_Name = Node_4;    				//节点选择
 	uint8 i = 0, branch = 0;         			  			  	//定义节点状态分支变量
-	uint8 passage = 2;											//选择HV高压模块通道
+	uint8 passage = 1;											//选择HV高压模块通道
 
 	Node_InterruptOFF();             			  			  	//关中断
 	branch = Node_HvStateCfg[Node_Name].BranchNum;        		//获取当前节点分支数量
