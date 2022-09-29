@@ -66,9 +66,9 @@ extern void Hv_Init(void);
 void Hv_InterruptON(void);
 void Hv_InterruptOFF(void);
 extern uint32 Hv_Get(uint8 passage, Hv_VoltageType Hv_Voltage);     //获取当前电压函数
-//extern Hv_ChargeControlType Hv_GetControl(uint8 passage, HV_StateType HV_State, HV_ThresholdType *cfg);  //电池充放电控制和热管理函数
+/*extern Hv_ChargeControlType Hv_GetControl(uint8 passage, HV_StateType HV_State, HV_ThresholdType *cfg);  //电池充放电控制和热管理函数
 extern uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit);    //获取当前电路绝缘电阻理论最小值
-extern Bool Hv_InsulationDetect(uint8 passage, Hv_CircuitType Hv_Circuit, Hv_ResistanceType *res);  //高压模块绝缘检测函数
+extern Bool Hv_InsulationDetect(uint8 passage, Hv_CircuitType Hv_Circuit, Hv_ResistanceType *res);  //高压模块绝缘检测函数*/
 extern uint8 Hv_VoltageJudge(uint8 passage);                            //判断电压函数
 extern uint8 Hv_TempJudge(uint8 passage);                               //判断温度函数
 extern void Hv_Discharge(uint8 passage);                                //控制电池放电函数

@@ -3987,8 +3987,7 @@ rtshc12.c.o (ansixbf.lib):
 CANMsg.c.o:
   CAN_SendCallBack 
 Hv.c.o:
-  Hv_Init Hv_InterruptON Hv_InterruptOFF Hv_Get Hv_ResistanceGet 
-  Hv_InsulationDetect 
+  Hv_Init Hv_InterruptON Hv_InterruptOFF Hv_Get 
 Node.c.o:
   Node_Init Node_NoAct Pre_Node_Poll 
 PrechargeM.c.o:
@@ -4011,8 +4010,6 @@ Node_Lcfg.c.o:
   Node_StateCfg a 
 RelayM_Lcfg.c.o:
   RelayM_ActureNum 
-Hv.c.o:
-  Hv_ResDCCfg Hv_ResACCfg 
 Node.c.o:
   Node_StateCfg a Node_Name.1 
 PrechargeM.c.o:

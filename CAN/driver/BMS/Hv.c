@@ -127,7 +127,7 @@ void Hv_NoAct(uint8 passage)							//空动作响应函数
     delay(passage);
 }
 
-uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前电路绝缘电阻理论上最小值
+/*uint32 Hv_ResistanceGet(uint8 passage, Hv_CircuitType Hv_Circuit)	//获取当前电路绝缘电阻理论上最小值
 {
 	uint32 re = 0;
 
@@ -178,4 +178,4 @@ Bool Hv_InsulationDetect(uint8 passage, Hv_CircuitType Hv_Circuit, Hv_Resistance
 		}
 	}
 	return re;
-}
+}*/
